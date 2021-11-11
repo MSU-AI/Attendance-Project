@@ -4,122 +4,145 @@ import time
 
 import cv2
 import mediapipe as mp
+import numpy as np
 import pandas as pd
 
-with open('finger_index.json', 'r') as file:
-    content = json.load(file)
-    finger_index = {name: id_ for id_, name in enumerate(content['index'])}
-
-def main():
-    # initialize camera (webcam) from ID 0 (could be a different ID if multiple webcams)
-    cap = cv2.VideoCapture(0)
-
-    # initialize hands
-    mp_hands = mp.solutions.hands
-    hands = mp_hands.Hands(
+class HandTracker:
+    def __init__(
+        self,
         static_image_mode=False,
         max_num_hands=1,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5,
-    )
-    mp_draw = mp.solutions.drawing_utils
+    ):
+        """A class to identify the 21 knuckle points of a hand.
+        All the arguments are passed to ``mediapipe.solutions.hands.Hands()``.
+        """
+        self.static_image_mode = static_image_mode
+        self.max_num_hands = max_num_hands
+        self.min_detection_confidence = min_detection_confidence
+        self.min_tracking_confidence = min_tracking_confidence
+        self.mp_hands = mp.solutions.hands.Hands(
+            static_image_mode=self.static_image_mode,
+            max_num_hands=self.max_num_hands,
+            min_detection_confidence=self.min_detection_confidence,
+            min_tracking_confidence=self.min_tracking_confidence,
+        )
 
-    prev_time, current_time = 0, 0
+        self.mp_draw = mp.solutions.drawing_utils
 
-    # main video loop
-    while True:
-        # get frame from camera
-        success, frame = cap.read()
-
-        # process RGB frame
-        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        result = hands.process(img_rgb)
-
-        gesture = 'unclassified'
-        df_pixels = []
-        if result.multi_hand_landmarks is not None: # at least one hand detected
-            # loop over all the hands
-            for hand_landmarks in result.multi_hand_landmarks:
-                # convert fractional landmark coordinates into pixel coordinates
-                for id_, lm in enumerate(hand_landmarks.landmark):
-                    height, width, _ = frame.shape
-                    pixel_x, pixel_y = int(lm.x * width), int(lm.y * height)
-                    df_pixels.append([id_, pixel_x, pixel_y])
-
-                # draw the hand on the frame
-                mp_draw.draw_landmarks(
-                    frame, hand_landmarks,
-                    connections=mp_hands.HAND_CONNECTIONS,
-                )
-            df_pixels = pd.DataFrame(df_pixels, columns=['id', 'x', 'y'])
-            df_pixels.set_index('id', inplace=True, drop=False)
-
-            # some statistics
-            gesture_stats = dict(
-                x_mean=df_pixels.x.mean(),
-                y_mean=df_pixels.y.mean(),
-                x_std=df_pixels.x.std(),
-                y_std=df_pixels.y.std(),
+        with open('finger_index.json') as file:
+            content = json.load(file)
+            self.landmark_index = {
+                name: id_ for id_, name in enumerate(content['index'])
+            }
+    
+    def process_frame(self, frame):
+        """Convert image frame into mediapipe Solution Outputs.
+        Parameters
+        ----------
+        frame : numpy.ndarray of shape (H, W, 3)
+            The image frame to be processed in RGB format.
+        
+        Returns
+        -------
+        processed_output : mediapipe.python.solution_base.SolutionOutputs
+            The processed output of the mediapipe pipeline.
+        """
+        rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        return self.mp_hands.process(rgb_image)
+    
+    @staticmethod
+    def found_hand(mp_solution_outputs):
+        """Check if at least one hand is found.
+        Parameters
+        ----------
+        mp_solution_outputs : mediapipe.python.solution_base.SolutionOutputs
+            The processed output of the mediapipe pipeline.
+        Returns
+        -------
+        found_hand : bool
+            True if a hand is found.
+        """
+        return mp_solution_outputs.multi_hand_landmarks is not None
+    
+    def get_single_hand_landmarks(self, frame, hand_landmarks, draw=False, normalize=True):
+        if draw:
+            self.mp_draw.draw_landmarks(
+                frame, hand_landmarks,
+                connections=mp.solutions.hands.HAND_CONNECTIONS,
             )
 
-            # determine gestures
-            if is_gesture_one(df_pixels, gesture_stats):
-                gesture = 'one'
-        
-        # calculate frame rate (fps)
-        current_time = time.time()
-        fps = 1 / (current_time - prev_time)
-        prev_time = current_time
+        df = []
+        max_frame_dim = max(frame.shape[:2])
+        for id_, lm in enumerate(hand_landmarks.landmark):
+            df.append([id_, lm.x, lm.y, lm.z])
+        df = pd.DataFrame(df, columns=['id', 'x', 'y', 'z'])
+        df.set_index('id', inplace=True, drop=True)
+        return self.normalize_hand(frame, df) if normalize else df
+    
+    def get_all_hands_landmarks(self, frame, outputs, draw=False, normalize=True):
+        result = []
+        for hand_landmarks in outputs.multi_hand_landmarks:
+            df = self.get_single_hand_landmarks(
+                frame,
+                hand_landmarks,
+                draw=draw,
+                normalize=normalize,
+            )
+            result.append(df)
+        return result
+    
+    def normalize_hand(self, frame, hand):
+        norm_hand = hand.copy()
 
-        # display frame and other info
-        cv2.putText(
-            frame, f'FPS:{fps:3.0f}',
-            (10, 20),
-            fontFace=cv2.FONT_HERSHEY_PLAIN,
-            fontScale=1,
-            color=(0, 0, 255),
-            thickness=2,
-        )
-        cv2.putText(
-            frame, f'{gesture}',
-            (10, 50),
-            fontFace=cv2.FONT_HERSHEY_PLAIN,
-            fontScale=2,
-            color=(0, 255, 0) if gesture != 'unclassified' else (255, 0, 0),
-            thickness=2,
-        )
-        cv2.imshow('img', frame)
-        time.sleep(0.04) # optional
+        # rescale y to dimension of x
+        norm_hand['y'] *= frame.shape[1] / frame.shape[0]
 
-        # break if key 'q' is pressed
-        if cv2.waitKey(1) == ord('q'):
-            break
+        # extract reference landmarks
+        i_wrist = self.landmark_index['wrist']
+        i_mid_mcp = self.landmark_index['middle_finger_mcp']
+        i_ind_mcp = self.landmark_index['index_finger_mcp']
 
-    # release camera and close all windows
-    cap.release()
-    cv2.destroyAllWindows()
+        # normalization
+        norm_hand['x'] = norm_hand['x'] - norm_hand['x'][i_wrist]
+        norm_hand['y'] = -(norm_hand['y'] - norm_hand['y'][i_wrist])
+        base_unit = np.mean([
+            np.linalg.norm(norm_hand.loc[i_mid_mcp] - norm_hand.loc[i_wrist]),
+            np.linalg.norm(norm_hand.loc[i_ind_mcp] - norm_hand.loc[i_wrist]),
+        ])
+        norm_hand['x'] /= base_unit
+        norm_hand['y'] /= base_unit
+        norm_hand['z'] /= base_unit
+        return norm_hand
+    
+class OpencvCamera:
+    def __init__(self, camera_id=0):
+        self.capture = cv2.VideoCapture(camera_id)
 
-def is_gesture_one(df_pixels, gesture_stats):
-    global finger_index
-    pix = df_pixels
-    stats = gesture_stats
-    x_thres = 1.5 * stats['x_std']
-    y_thres = 1.5 * stats['y_std']
-
-    cond_1 = pix.id.iloc[pix.y.argmin()] == finger_index['index_finger_tip']
-    cond_2 = (
-        pix.loc[finger_index['thumb_tip'], 'x']  - stats['x_mean'] < x_thres
-        and pix.loc[finger_index['middle_finger_tip'], 'x'] - stats['x_mean'] < x_thres
-        and pix.loc[finger_index['ring_finger_tip'], 'x'] - stats['x_mean'] < x_thres
-        and pix.loc[finger_index['pinky_tip'], 'x'] - stats['x_mean'] < x_thres
-    )
-    cond_3 = (
-        pix.loc[finger_index['index_finger_tip'], 'y'] - stats['y_mean'] < y_thres
-        and pix.loc[finger_index['middle_finger_tip'], 'y'] - stats['y_mean'] < y_thres
-        and pix.loc[finger_index['ring_finger_tip'], 'y'] - stats['y_mean'] < y_thres
-        and pix.loc[finger_index['pinky_tip'], 'y'] - stats['y_mean'] < y_thres
-    )
-    return cond_1 and cond_2 and cond_3
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.capture.release()
+        cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    main()
+    hand_tracker = HandTracker(max_num_hands=4)
+
+    with OpencvCamera() as camera:
+        while cv2.waitKey(1) != ord('q'):
+            _, frame = camera.capture.read()
+            frame = cv2.flip(frame, 1) # mirror
+
+            outputs = hand_tracker.process_frame(frame)
+            if hand_tracker.found_hand(outputs):
+                hands_landmarks = hand_tracker.get_all_hands_landmarks(
+                    frame,
+                    outputs,
+                    draw=True,
+                    normalize=True,
+                )
+
+            cv2.imshow('Tracker for 21 hand landmarks', frame)
+            time.sleep(0.02)
