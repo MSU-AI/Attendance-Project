@@ -22,11 +22,11 @@ Currently, only five gestures are supported:
 - Thumbs down
 
 ## How to train?
-This is still under development. For now, we have a very simple model that train on ~300 labeled landmarks; see [`landmarked.csv`](data/landmarked.csv). The trained model is saved as [`model.pkl`](model.pkl). To train the model, run the following command:
+This is still under development. For now, we have a very simple model (Support Vector Machine) that trains on ~300 labeled landmarks; see [`landmarked.csv`](data/landmarked.csv). The trained model is saved as [`model.pkl`](model.pkl). To (re)train the model, run the following command:
 ```bash
 python train.py
 ```
 
 ## What is a landmark?
-Landmark, or hand landmark, is a point on the hand that is used to detect the hand. In this project, we use the hand tracking solutions by [MediaPipe](https://google.github.io/mediapipe/solutions/hands) to detect the 21 landmarks. Then we train our own model to classify the hand gesture using the (x, y, z) coordinates of the landmarks. Below is a figure showing the indices of the landmarks, which are stored in [`landmark-index.json`](landmark-index.json).
+Landmark, or hand landmark, is a point on the hand that is used for hand gesture recognition. In this project, we use the hand tracking solutions by [MediaPipe](https://google.github.io/mediapipe/solutions/hands) to detect the 21 landmarks. Then we train our own model to classify the hand gesture using the (x, y, z) coordinates of the landmarks. Below is a figure showing the indices of the landmarks, which are stored in [`landmark-index.json`](landmark-index.json).
 ![Landmarks](hand-landmarks.png)
