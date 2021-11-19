@@ -28,5 +28,5 @@ python train.py
 ```
 
 ## What is a landmark?
-Landmark, or hand landmark, is a point on the hand that is used to detect the hand. In this project, we use the hand tracking solutions by [MediaPipe](https://google.github.io/mediapipe/solutions/hands) to detect the 21 landmarks. Then we train our own model to classify the hand gesture using the (x, y, z) coordinates of the landmarks. Below is a figure showing the indices of the landmarks, which are stored in [`landmark-index.json`](landmark_index.json).
+Landmark, or hand landmark, is a point on the hand that is used to detect the hand. In this project, we use the hand tracking solutions by [MediaPipe](https://google.github.io/mediapipe/solutions/hands) to detect the 21 landmarks. Then we train our own model to classify the hand gesture using the (x, y, z) coordinates of the landmarks. Below is a figure showing the indices of the landmarks, which are stored in [`landmark-index.json`](landmark-index.json).
 ![Landmarks](hand-landmarks.png)
