@@ -51,7 +51,7 @@ class HandTracker:
         self.mp_draw = mp.solutions.drawing_utils
         self.solution_outputs = None
 
-        with open('finger_index.json') as file:
+        with open('landmark-index.json') as file:
             content = json.load(file)
             self.landmark_index = {
                 name: id_ for id_, name in enumerate(content['index'])
