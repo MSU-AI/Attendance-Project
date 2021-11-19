@@ -211,15 +211,12 @@ class HandTracker:
         return norm_hand
     
     def read_model(self, path):
-        """To-do. Not implemented yet."""
-        pass
+        with open(path, 'rb') as file:
+            self.model = pickle.load(file)
 
     def predict(self, df_hand):
-        """To-do. Not fully implemented yet.
-
-        Currently gives random prediction
-        """
-        return np.random.choice(range(6))
+        x = df_hand.to_numpy()[1:].flatten()
+        return self.model.predict(x.reshape(1, -1))[0]
 
 class OpencvCamera:
     def __init__(self, camera_id=0):
