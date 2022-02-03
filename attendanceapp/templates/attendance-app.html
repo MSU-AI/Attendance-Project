@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Tracker</title>
+  </head>
+  <body>
+    <video playsinline autoplay style="display: none"></video>
+    <canvas></canvas>
+    <pre id="data_output">Connecting...</pre>
+
+    <script>
+      const video = document.querySelector("video");
+
+      const canvas = document.querySelector("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const data_output = document.querySelector("#data_output");
+
+      let dataFromServer = {};
+
+      navigator.mediaDevices
+        .getUserMedia({ audio: false, video: true })
+        .then((stream) => (video.srcObject = stream))
+        .catch((err) =>
+          alert(
+            "Permission to access webcam was denied. Make sure your browser settings allow webcam access on this page."
+          )
+        );
+
+      function renderVideoToCanvas(canvas) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
+      }
+
+      function render() {
+        renderVideoToCanvas(canvas);
+
+        // ctx.fillStyle = "red";
+        // ctx.font = "24px Arial";
+        // ctx.fillText(`Server says: ${dataFromServer.length}`, 10, 28);
+      }
+
+      function loop() {
+        requestAnimationFrame(loop);
+        render();
+      }
+
+      loop();
+
+      const WS_URL = "ws://localhost:8000/ws/camera";
+      const FPS = 3;
+      const ws = new WebSocket(WS_URL);
+      ws.onopen = () => {
+        console.log(`Connected to ${WS_URL}`);
+        setInterval(() => {
+          const processingCanvas = document.createElement("canvas");
+          renderVideoToCanvas(processingCanvas);
+          ws.send(processingCanvas.toDataURL("image/png"));
+        }, 1000 / FPS);
+      };
+
+      ws.onclose = () => {
+        data_output.innerText = "Connection failed.";
+      };
+
+      ws.onmessage = (message) => {
+        dataFromServer = JSON.parse(message.data);
+        console.log("Server says:", JSON.stringify(dataFromServer));
+        data_output.innerText = 'Length of received frame: ' + dataFromServer['length'];
+
+      };
+    </script>
+  </body>
+</html>
