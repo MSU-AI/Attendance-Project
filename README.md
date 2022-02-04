@@ -8,8 +8,6 @@ Make sure you are *not* using the pip within conda, otherwise you might encounte
 
 For Windows:
 ```powershell
-(gcm pip).Path     # should neither be under Anaconda nor Miniconda
-(gcm python).Path  # should neither be under Anaconda nor Miniconda
 python -m venv .\env_interaction             # create environment
 .\env_interaction\Scripts\activate           # activate environment
 python -m pip install -r requirements.txt    # install dependencies
@@ -17,8 +15,6 @@ python -m pip install -r requirements.txt    # install dependencies
 
 For macOS/Unix:
 ```bash
-which pip     # should neither be under Anaconda nor Miniconda
-which python  # should neither be under Anaconda nor Miniconda
 python -m venv ./env_interaction            # create environment
 source ./env_interaction/bin/activate       # activate environment
 python -m pip install -r requirements.txt   # install dependencies
