@@ -1,13 +1,47 @@
 # Interaction branch (Hand gesture recognition)
 
-> Warning: Currently, this branch is only developed as a standalone software running on Ubuntu (most likely would work on other Linux environment; not tested yet).
-
 ## How to install?
+We will be creating a local environment under the project directory, either using `venv` or `conda`. Since there are more than one branches in this project, we will have to switch from environment to environment when checking out different branches. So in this tutorial, we have avoided using generic name for our local environment, such as `env/` or `venv/`; please use `env_interaction/`.
+
+### Using pip
+Make sure you are *not* using the pip within conda, otherwise you might encounter an [SSLError](https://stackoverflow.com/questions/45954528/pip-is-configured-with-locations-that-require-tls-ssl-however-the-ssl-module-in).
+
+For Windows:
+```powershell
+(gcm pip).Path     # should neither be under Anaconda nor Miniconda
+(gcm python).Path  # should neither be under Anaconda nor Miniconda
+python -m venv .\env_interaction             # create environment
+.\env_interaction\Scripts\activate           # activate environment
+python -m pip install -r requirements.txt    # install dependencies
+```
+
+For macOS/Unix:
 ```bash
-python3 -m venv ./venv                      # create virtual environment
-source ./venv/bin/activate                  # activate environment
+which pip     # should neither be under Anaconda nor Miniconda
+which python  # should neither be under Anaconda nor Miniconda
+python -m venv ./env_interaction            # create environment
+source ./env_interaction/bin/activate       # activate environment
 python -m pip install -r requirements.txt   # install dependencies
 ```
+
+More about pip: https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/.
+
+### Using conda
+For Windows:
+```powershell
+(gcm conda.exe).Path   # you should see something, meaning that conda is activated
+conda env create --prefix .\env_interaction --file environment.yml # create environment
+conda activate .\env_interaction                                   # activate environment
+```
+
+For macOS/Unix:
+```bash
+which conda     # you should see something, meaning that conda is activated
+conda env create --prefix ./env_interaction --file environment.yml # create environment
+conda activate ./env_interaction                                   # activate environment
+```
+
+More about conda: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
 
 ## How to use?
 Make sure a camera is connected to the computer, then run the following command:
@@ -29,4 +63,4 @@ python train.py
 
 ## What is a landmark?
 Landmark, or hand landmark, is a point on the hand that is used for hand gesture recognition. In this project, we use the hand tracking solutions by [MediaPipe](https://google.github.io/mediapipe/solutions/hands) to detect the 21 landmarks. Then we train our own model to classify the hand gesture using the (x, y, z) coordinates of the landmarks. Below is a figure showing the indices of the landmarks, which are stored in [`landmark-index.json`](landmark-index.json).
-![Landmarks](hand-landmarks.png)
+![Landmarks](hand-landmarks.png) Credit: [MediaPipe](https://google.github.io/mediapipe/solutions/hands)
