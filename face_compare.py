@@ -12,7 +12,7 @@ cap = cv2.VideoCapture(0)
 
 sfr = SimpleFacerec()
 
-sfr.load_encoding_images("/Users/abdullahbaqai/Desktop/MSU AI/images/")
+sfr.load_encoding_images("./face_images/")
 
 
 while True:
