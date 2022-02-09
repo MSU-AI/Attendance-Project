@@ -35,7 +35,8 @@ while True:
     
     key = cv2.waitKey(1)
     
-    if key == 27:
+    # press q or esc (key 27) to quit
+    if key == ord('q') or key == 27:
         break
     
     
