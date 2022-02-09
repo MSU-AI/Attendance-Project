@@ -1,0 +1,5 @@
+# To ignore everything in this directory except this file itself.
+# This is a directory intended for users
+# to put face images which they would like the program to recognize.
+*
+!.gitignore
