@@ -111,3 +111,8 @@ db.sqlite3
 *.iml
 out
 gen
+
+# Misc. Django files:
+
+static/
+*.sock
