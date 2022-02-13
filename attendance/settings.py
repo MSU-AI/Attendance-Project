@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,13 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+# We read the 'DJANGO_SECRET_KEY' environment variable.
+# If this variable does not exist, then we use the default key. 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8(ve(p+55_-2&%8jw@4!o@f7o$y%8za7_vh0b04t32*j5bw5a3'
+#SECRET_KEY = 'django-insecure-8(ve(p+55_-2&%8jw@4!o@f7o$y%8za7_vh0b04t32*j5bw5a3'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-8(ve(p+55_-2&%8jw@4!o@f7o$y%8za7_vh0b04t32*j5bw5a3')
 
+# Reads the 'DJANGO_DEBUG' environment variable.
+# If it is 'False', then we disable debug mode.
+# You should not set this environment variable on development machines!
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['test.msuaiclub.com']
 
 
 # ASGI setting required for using `Channels` (for websockets)
