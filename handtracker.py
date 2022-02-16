@@ -2,12 +2,20 @@
 import json
 import pickle
 import time
+from typing_extensions import Self
 
 import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
 
+#face recog modules
+from simple_facerec import SimpleFacerec
+
+sfr = SimpleFacerec()
+
+sfr.load_encoding_images("./face_images/")
+#end of face recog modules
 class HandTracker:
     def __init__(
         self,
@@ -265,5 +273,19 @@ if __name__ == '__main__':
                     )
             hand_tracker.clear_solution_outputs()
 
-            cv2.imshow(f'Hand gestures: {labels[1:]}', frame)
             time.sleep(0.03)
+            # Start of Face Recog
+            #detect faces
+            face_locations, face_names = sfr.detect_known_faces(frame)   
+            
+            #Draw rectangle and print names
+            
+            for face_loc, name in zip(face_locations, face_names):
+                
+                y1,x1,y2,x2 = face_loc[0],face_loc[1],face_loc[2],face_loc[3]
+                
+                cv2.putText(frame,name,(x1,y1 - 10),cv2.FONT_HERSHEY_DUPLEX,1,(255,0,0),2)
+                
+                cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,200),2)
+            
+            cv2.imshow('Frame',frame)
