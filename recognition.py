@@ -2,7 +2,6 @@
 import json
 import pickle
 import time
-from typing_extensions import Self
 
 import cv2
 import mediapipe as mp
