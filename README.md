@@ -40,10 +40,14 @@ conda activate ./env_interaction                                   # activate en
 More about conda: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
 
 ## How to use?
+
+The face_images file contains images the app will try to recognize. It contains a placeholder picture of Barack Obama. Add a picture of yourself to the face_images file and name it to your name.
+
 Make sure a camera is connected to the computer, then run the following command:
 ```bash
-python handtracker.py
+python recognition.py
 ```
+
 Currently, only five gestures are supported:
 - One (index finger up)
 - Two (index finger and middle finger up)
