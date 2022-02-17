@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-8(ve(p+55_-2&%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['test.msuaiclub.com', 'localhost']
+ALLOWED_HOSTS = ['test.msuaiclub.com', 'localhost', '127.0.0.1']
 
 
 # ASGI setting required for using `Channels` (for websockets)
