@@ -1,36 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Attendance Tracker</title>
-
-    <style>
-
-      .camera{
-
-          height: auto;
-          width: auto;
-          text-align: left;
-      }
-
-  </style>
-  </head>
-  <body>
-
-    <div class="camera"> </div>
-    <input type="button" value="Take a Photo", onclick= "burst_snapshot(5)" />
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js" integrity="sha512-AQMSn1qO6KN85GOfvH6BWJk46LhlvepblftLHzAv1cdIyTWPBKHX+r+NOXVVw6+XQpeW4LJk/GTmoP48FLvblQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-      
 // CAMERA SETTINGS.
 
-Webcam.set({
+  Webcam.set({
     width: 220,
     height: 190,
     image_format: 'jpeg',
@@ -78,12 +48,11 @@ burst_snapshot = (n) => { // n is the number of picture you need
 
 /* Checking the protocal */
 let WS_URL
-if (location.protocol == 'http:'){
-    console.log("HTTP Connection")
+if (location.protocal == 'http:'){
     WS_URL = "ws://localhost:8000/ws/camera";
 }
 
-if (location.protocol == 'https:'){
+if (location.protocal == 'https:'){
     WS_URL =  "wss://test.msuaiclub.com:443/ws/camera"
 }
 
@@ -100,8 +69,3 @@ ws.onmessage = (message) => {
         output.innerText = JSON.stringify(dataFromServer)
       };
 
-    </script>
-
-<!-- <script src="app.js"></script> -->
-  </body>
-</html>
