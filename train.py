@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 
 def main():
     # read in and process landmark data
-    data = pd.read_csv('data/landmarked.csv')
+    data = pd.read_csv('hand_images/landmarked.csv')
     data.set_index(['label', 'index'], inplace=True)
     data = clone_with_variations(data)
 
