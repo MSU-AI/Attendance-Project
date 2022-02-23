@@ -1,21 +1,21 @@
 #!/usr/bin/env python
+import base64
+import io
 import json
 import pickle
 import time
-#from typing_extensions import Self
 
 import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
+import PIL
 
-#face recog modules
 from simple_facerec import SimpleFacerec
 
 sfr = SimpleFacerec()
-
 sfr.load_encoding_images("./face_images/")
-#end of face recog modules
+
 class HandTracker:
     def __init__(
         self,
@@ -236,6 +236,35 @@ class OpencvCamera:
     def __exit__(self, exc_type, exc_value, traceback):
         self.capture.release()
         cv2.destroyAllWindows()
+
+def base64_to_arr(base64_str):
+    return np.array(PIL.Image.open(io.BytesIO(base64.b64decode(base64_str))))
+
+def get_face(frame):
+    face_locations, face_names = sfr.detect_known_faces(frame)
+    if len(face_locations) != 0:
+        tracked_name = face_names[0]
+
+    if len(face_locations) != 0 and face_names[0] == tracked_name:
+        return face_names[0]
+    else:
+        return 'no-face'
+
+def get_gesture(frame):
+    labels = np.array([
+        'unclassified',
+        'one', 'two', 'three',
+        'thumbs up', 'thumbs down',
+    ])
+    hand_tracker = HandTracker(max_num_hands=1, static_image_mode=True)
+    hand_tracker.read_model('model.pkl')
+    hand_tracker.process_frame(frame)
+    if hand_tracker.found_hand():
+        df_hands = hand_tracker.get_all_hand_dataframes(frame)
+        for i_hand, df_hand in enumerate(df_hands):
+            label = labels[hand_tracker.predict(df_hand)]
+            return label
+    return 'no-hand'
 
 if __name__ == '__main__':
     labels = np.array([
