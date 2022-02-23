@@ -1,0 +1,13 @@
+name: env_interaction
+channels:
+    - anaconda
+    - conda-forge
+dependencies:
+    - conda-build
+    - python=3.9
+    - numpy=1.22.1
+    - pandas=1.4.0
+    - scikit-learn=1.0.2
+    - opencv=4.5.5
+    - pip: # some libraries are only available via pip, or the conda version is too old
+        - mediapipe==0.8.9.1
