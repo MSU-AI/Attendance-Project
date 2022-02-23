@@ -2,6 +2,7 @@
 import json
 import pickle
 import time
+#from typing_extensions import Self
 
 import cv2
 import mediapipe as mp
@@ -246,11 +247,15 @@ if __name__ == '__main__':
     hand_tracker = HandTracker(max_num_hands=1)
     hand_tracker.read_model('model.pkl')
 
+    tracked_name = ""
+    controlBool = 1
     with OpencvCamera() as camera:
         while cv2.waitKey(1) != ord('q'):
             _, frame = camera.capture.read()
             frame = cv2.flip(frame, 1) # mirror
-
+            #sframe = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+        # Do something with your image here.
+            
             hand_tracker.process_frame(frame)
             if hand_tracker.found_hand():
                 df_hands = hand_tracker.get_all_hand_dataframes(frame)
@@ -275,16 +280,13 @@ if __name__ == '__main__':
             time.sleep(0.03)
             # Start of Face Recog
             #detect faces
-            face_locations, face_names = sfr.detect_known_faces(frame)   
-            
+            face_locations, face_names = sfr.detect_known_faces(frame)
+            if controlBool == 1 and len(face_locations) != 0:
+                tracked_name = face_names[0]
+                controlBool = 0
             #Draw rectangle and print names
-            
-            for face_loc, name in zip(face_locations, face_names):
-                
-                y1,x1,y2,x2 = face_loc[0],face_loc[1],face_loc[2],face_loc[3]
-                
-                cv2.putText(frame,name,(x1,y1 - 10),cv2.FONT_HERSHEY_DUPLEX,1,(255,0,0),2)
-                
+            if len(face_locations) != 0 and face_names[0] == tracked_name:
+                y1,x1,y2,x2 = face_locations[0][0],face_locations[0][1],face_locations[0][2],face_locations[0][3]
+                cv2.putText(frame,face_names[0],(x1,y1 - 10),cv2.FONT_HERSHEY_DUPLEX,1,(255,0,0),2)
                 cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,200),2)
-            
             cv2.imshow('Frame',frame)
