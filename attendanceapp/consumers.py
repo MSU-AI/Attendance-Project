@@ -88,6 +88,8 @@ class CameraConsumer(WebsocketConsumer):
 
         # Check if a hand is found:
         
+        final_lables = []
+
         if self.hand_track.found_hand():
 
             print("Found hands!")
@@ -97,6 +99,10 @@ class CameraConsumer(WebsocketConsumer):
 
             for i_hand, df_hand in enumerate(df_hands):
                 label = self.labels[self.hand_track.predict(df_hand)]
+
+                # Append the label to the final lables:
+                
+                final_lables.append(label)
 
                 # display prediction
                 lm = self.hand_track.solution_outputs.multi_hand_landmarks[i_hand].landmark
@@ -140,6 +146,7 @@ class CameraConsumer(WebsocketConsumer):
         self.send(json.dumps(
             {
                 'face_locations': face_locations.tolist(),
-                'face name': face_names,
+                'face_name': face_names,
+                'hand_lables': final_lables
             }
         ))
