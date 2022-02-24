@@ -20,7 +20,7 @@
   <body>
 
     <div class="camera"> </div>
-    <input type="button" value="Take a Photo", onclick= "burst_snapshot(5)" />
+    <input type="button" value="Take a Photo", onclick= "burst_snapshot(10)" />
 
 
 
@@ -58,7 +58,7 @@ takeSnapShot = function () {
 
 // burst capture
 burst_snapshot = (n) => { // n is the number of picture you need
-    
+    const start = Date().now()
     i=0
     burst = setInterval(function () {
             
@@ -68,21 +68,26 @@ burst_snapshot = (n) => { // n is the number of picture you need
             if (i == n) {
                 console.log('done');
                 clearInterval(burst)
+                const duration = Date().now() - start // this is the total time of execution.
+                //time in millisecond. If you want microsecond replace Date() with perforamce in 61 and 71
             }
 
-        },3000) // 3000 is 3 seconds per image
+        },100) 
+
 
 }
+
 
 
 
 /* Checking the protocal */
 let WS_URL
-if (location.protocal == 'http:'){
+if (location.protocol == 'http:'){
+    console.log("HTTP Connection")
     WS_URL = "ws://localhost:8000/ws/camera";
 }
 
-if (location.protocal == 'https:'){
+if (location.protocol == 'https:'){
     WS_URL =  "wss://test.msuaiclub.com:443/ws/camera"
 }
 
