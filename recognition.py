@@ -238,6 +238,9 @@ class OpencvCamera:
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
+    sfr = SimpleFacerec()
+    sfr.load_encoding_images("./face_images/")
+
     labels = np.array([
         'unclassified',
         'one', 'two', 'three',
