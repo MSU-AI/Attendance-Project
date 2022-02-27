@@ -2,20 +2,15 @@
 import json
 import pickle
 import time
-#from typing_extensions import Self
+from pathlib import Path
 
 import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
 
-#face recog modules
 from simple_facerec import SimpleFacerec
 
-sfr = SimpleFacerec()
-
-sfr.load_encoding_images("./face_images/")
-#end of face recog modules
 class HandTracker:
     def __init__(
         self,
@@ -59,7 +54,8 @@ class HandTracker:
         self.mp_draw = mp.solutions.drawing_utils
         self.solution_outputs = None
 
-        with open('landmark-index.json') as file:
+        path = Path(__file__).parent / 'landmark-index.json'
+        with open(path) as file:
             content = json.load(file)
             self.landmark_index = {
                 name: id_ for id_, name in enumerate(content['index'])
@@ -77,6 +73,7 @@ class HandTracker:
         """
         rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         self.solution_outputs = self.mp_hands.process(rgb_image)
+        return rgb_image
     
     def clear_solution_outputs(self):
         """Clear the mediapipe solution outputs.
@@ -142,7 +139,7 @@ class HandTracker:
         return result
 
     def draw_single_hand(self, frame, hand_landmarks, *args, **kwargs):
-        """Draw the hand landmarks on the image frame.
+        """Draw the hand landmarks on the image frame in-place.
 
         Parameters
         ----------
@@ -158,7 +155,7 @@ class HandTracker:
         )
     
     def draw_all_hands(self, frame, *args, **kwargs):
-        """Draw all the hand landmarks on the image frame.
+        """Draw all the hand landmarks on the image frame in-place.
 
         Parameters
         ----------
@@ -256,8 +253,6 @@ if __name__ == '__main__':
         while cv2.waitKey(1) != ord('q'):
             _, frame = camera.capture.read()
             frame = cv2.flip(frame, 1) # mirror
-            #sframe = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
-        # Do something with your image here.
             
             hand_tracker.process_frame(frame)
             if hand_tracker.found_hand():
