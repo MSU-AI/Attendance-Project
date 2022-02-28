@@ -27,7 +27,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js" integrity="sha512-AQMSn1qO6KN85GOfvH6BWJk46LhlvepblftLHzAv1cdIyTWPBKHX+r+NOXVVw6+XQpeW4LJk/GTmoP48FLvblQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-      
+
 // CAMERA SETTINGS.
 
 Webcam.set({
@@ -48,8 +48,21 @@ takeSnapShot = function () {
         
         var str = data_uri
         
+        // Here is where the metadata and payload are defined.
+        // Simply create the metadata as a JSON string with key 
+        // 'id' and value being the id of the event you wish to process.
 
-        ws.send(str)
+        // Send the image for processing:
+
+        ws.send('{"id": "face"}' + str)
+
+        // Send data to the dummy handler:
+
+        ws.send('{"id": "dummy"}This is dummy data!')
+
+      // Raise an exception and show error handling
+
+        ws.send('{"id": "error"}Raise an error!')
     });
 }
 
