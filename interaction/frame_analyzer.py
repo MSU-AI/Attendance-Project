@@ -1,6 +1,6 @@
-from recognition.py import HandTracker, SimpleFacerec
-
-#import the face recognition file
+from HandRec.py import HandTracker
+# from FaceRec.py import
+#import the face recognition class
 
 import HandTracker
 
@@ -8,8 +8,6 @@ class AnalyzeFrame():
 
     """
         Class that analyzes faces and hand gestures a frame
-
-
     """
     def __init__(self, frame):
         self.frame = frame
@@ -17,6 +15,6 @@ class AnalyzeFrame():
     def set_frame(self, frame):
         pass
 
-
+    #
 
 

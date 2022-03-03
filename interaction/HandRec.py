@@ -6,6 +6,9 @@
 
 
 class HandTracker:
+
+    #class that tracks hand
+
     def __init__(
             self,
             static_image_mode=False,
