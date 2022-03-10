@@ -42,7 +42,6 @@ class HandRecognize(BaseHandler):
             'thumbs up', 'thumbs down',
         ])
 
-        
     def handle(self, data: bytes):
         """
         Checks for hand gestures in the given frame.
