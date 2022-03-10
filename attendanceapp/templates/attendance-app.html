@@ -27,7 +27,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.js" integrity="sha512-AQMSn1qO6KN85GOfvH6BWJk46LhlvepblftLHzAv1cdIyTWPBKHX+r+NOXVVw6+XQpeW4LJk/GTmoP48FLvblQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-      
+
 // CAMERA SETTINGS.
 
 Webcam.set({
@@ -48,8 +48,25 @@ takeSnapShot = function () {
         
         var str = data_uri
         
+        // Here is where the metadata and payload are defined.
+        // Simply create the metadata as a JSON string with key 
+        // 'id' and value being the id of the event you wish to process.
 
-        ws.send(str)
+        // Send the image for face processing:
+
+        ws.send('{"id": "face"}' + str);
+
+        // Send the image for hand processing:
+
+        ws.send('{"id": "hand"}' + str);
+
+        // Send data to the dummy handler:
+
+        ws.send('{"id": "dummy"}This is dummy data!');
+
+       // Raise an exception and show error handling
+
+        ws.send('{"id": "error"}Raise an error!');
     });
 }
 
@@ -95,9 +112,21 @@ ws.onopen = () => {
 
 let output = document.createElement("p")
 ws.onmessage = (message) => {
-        dataFromServer = JSON.parse(message.data);
+
+        // Decode any metadata we sent:
+
+        meta = message.data.slice(0, message.data.indexOf('}')+1);
+
+        // Get payload data:
+
+        payload = message.data.slice(message.data.indexOf('}')+1);
+
+        // Output some stuff:
+
+        dataFromServer = JSON.parse(payload);
         console.log("Server says:", JSON.stringify(dataFromServer));
-        output.innerText = JSON.stringify(dataFromServer)
+        console.log("Metadata: " + meta);
+        output.innerText = JSON.stringify(dataFromServer);
       };
 
     </script>
