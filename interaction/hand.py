@@ -1,14 +1,83 @@
+"""This module is responsible for the face recognition.
+"""
+import glob
 
+import numpy as np
+import pandas as pd
 
+class Hand:
+    def __init__(self, gesture, landmarks, status):
+        """
 
+        Parameters
+        ----------
+        gesture : str
+            The gesture for the hand gesture, e.g. "thumbs up", "number 1", etc.
+        landmarks : dict or pandas.DataFrame
+            The landmarks for the hand gesture. See
+            https://github.com/MSU-AI/Attendance-Project/blob/master/hand-landmarks.png
+            Each landmark is consists of a tuple of (x, y, z) coordinates.
+        status : str
+            The status of the hand gesture. For example, "identified", "unidentified",
+            etc.
+        """
+        pass
 
+    def __eq__(self, other):
+        """
+        Compare two hand gestures.
+        """
+        pass
 
+    @classmethod
+    def get_all_available_gestures(cls):
+        """Returns all available hand gestures that are supported.
 
+        Parameters
+        ----------
+        all_gesture_labels : list of str
+            The list of all available hand gesture labels.
+        """
+        pass
+
+class HandRecognizer:
+    """
+    ```python
+    obj = HandRecognizer(frame)
+    obj.recognize_hand()
+    # Hand(gesture="thumbs up", landmarks={...}, status="identified")
+    ```
+    """
+    def __init__(self, frame, max_num_hands=1):
+        pass
+
+    def recognize_all_hands(self):
+        """
+
+        Returns
+        -------
+        hands : list of Hand instances
+            The list of all recognized hands.
+        """
+        pass
+
+    def determine_best_hand(self, hands):
+        pass
+
+    def recognize_hand(self):
+        """
+
+        Returns
+        -------
+        hand : Hand instance
+            The recognized hand.
+        """
+        pass
+
+    def recognize(self):
+        pass
 
 class HandTracker:
-
-    #class that tracks hand
-
     def __init__(
             self,
             static_image_mode=False,

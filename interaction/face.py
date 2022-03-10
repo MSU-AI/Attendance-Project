@@ -1,15 +1,32 @@
+"""This module is responsible for the face recognition.
+"""
+import glob
+import os
 
+import cv2
+import face_recognition
+import numpy as np
 
+class Face:
+    def __init__(self, name, image, status):
+        """
 
-
-
-
+        Parameters
+        ----------
+        name : str
+            The name for the owner of the face.
+        image : numpy.ndarray
+            The image of the face.
+        status : str
+            The status of the face. For example, "identified", "unidentified",
+            etc.
+        """
+        pass
 
 
 class FaceEncoder:
-  
-  #Class that encodes images and sends for recognition
-  
+    """Class that encodes images and sends for recognition
+    """
     def __init__(self):
         self.known_face_encodings = []
         self.known_face_names = []
