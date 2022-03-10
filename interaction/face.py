@@ -1,10 +1,15 @@
-import face_recognition
-import cv2
-import os
-import glob
-import numpy as np
 
-class SimpleFacerec:
+
+
+
+
+
+
+
+class FaceEncoder:
+  
+  #Class that encodes images and sends for recognition
+  
     def __init__(self):
         self.known_face_encodings = []
         self.known_face_names = []

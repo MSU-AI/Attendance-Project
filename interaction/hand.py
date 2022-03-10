@@ -1,23 +1,20 @@
-#!/usr/bin/env python
-import json
-import pickle
-import time
-from pathlib import Path
 
-import cv2
-import mediapipe as mp
-import numpy as np
-import pandas as pd
 
-from simple_facerec import SimpleFacerec
+
+
+
+
 
 class HandTracker:
+
+    #class that tracks hand
+
     def __init__(
-        self,
-        static_image_mode=False,
-        max_num_hands=1,
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5,
+            self,
+            static_image_mode=False,
+            max_num_hands=1,
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5,
     ):
         """A class to identify the 21 landmarks of a hand using mediapipe.
 
@@ -60,7 +57,7 @@ class HandTracker:
             self.landmark_index = {
                 name: id_ for id_, name in enumerate(content['index'])
             }
-    
+
     def process_frame(self, frame):
         """Convert image frame into mediapipe Solution Outputs.
 
@@ -74,7 +71,7 @@ class HandTracker:
         rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         self.solution_outputs = self.mp_hands.process(rgb_image)
         return rgb_image
-    
+
     def clear_solution_outputs(self):
         """Clear the mediapipe solution outputs.
 
@@ -91,7 +88,7 @@ class HandTracker:
             True if at least one hand is found.
         """
         return self.solution_outputs.multi_hand_landmarks is not None
-    
+
     def get_single_hand_dataframe(self, frame, hand_landmarks, normalize=True):
         """Return a pandas DataFrame of the hand landmarks.
 
@@ -103,7 +100,7 @@ class HandTracker:
             The hand landmarks to be converted into a pandas DataFrame.
         normalize : bool, default True
             If set to ``True``, the coordinates are normalized.
-        
+
         Returns
         -------
         df : pandas.DataFrame
@@ -116,7 +113,7 @@ class HandTracker:
         df = pd.DataFrame(df, columns=['id', 'x', 'y', 'z'])
         df.set_index('id', inplace=True, drop=True)
         return self.normalize_hand(frame, df) if normalize else df
-    
+
     def get_all_hand_dataframes(self, frame, normalize=True):
         """Return a list of pandas DataFrames of the hand landmarks.
 
@@ -126,7 +123,7 @@ class HandTracker:
             The image frame to be processed in RGB format.
         normalize : bool, default True
             If set to ``True``, the coordinates are normalized.
-        
+
         Returns
         -------
         df_list : list of pandas.DataFrame
@@ -153,7 +150,7 @@ class HandTracker:
             connections=mp.solutions.hands.HAND_CONNECTIONS,
             *args, **kwargs,
         )
-    
+
     def draw_all_hands(self, frame, *args, **kwargs):
         """Draw all the hand landmarks on the image frame in-place.
 
@@ -164,7 +161,7 @@ class HandTracker:
         """
         for hand_landmarks in self.solution_outputs.multi_hand_landmarks:
             self.draw_single_hand(frame, hand_landmarks, *args, **kwargs)
-    
+
     def normalize_hand(self, frame, hand):
         """Normalize the hand dataframe.
 
@@ -175,14 +172,14 @@ class HandTracker:
         to the middle finger MCP and index finger MCP is 1.
         - Flip y-axis and z-axis. So when viewing the image on monitor, +y is up
         and +z is toward the viewer.
-        
+
         Parameters
         ----------
         frame : numpy.ndarray of shape (H, W, 3)
             The image frame to be processed in RGB format.
         hand : pandas.DataFrame
             The hand dataframe to be normalized. Columns are 'x', 'y', 'z'.
-        
+
         Returns
         -------
         norm_hand : pandas.DataFrame
@@ -214,7 +211,7 @@ class HandTracker:
         norm_hand['z'] *= -1
 
         return norm_hand
-    
+
     def read_model(self, path):
         with open(path, 'rb') as file:
             self.model = pickle.load(file)
@@ -222,69 +219,3 @@ class HandTracker:
     def predict(self, df_hand):
         x = df_hand.to_numpy()[1:].flatten()
         return self.model.predict(x.reshape(1, -1))[0]
-
-class OpencvCamera:
-    def __init__(self, camera_id=0):
-        self.capture = cv2.VideoCapture(camera_id)
-
-    def __enter__(self):
-        return self
-    
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.capture.release()
-        cv2.destroyAllWindows()
-
-if __name__ == '__main__':
-    sfr = SimpleFacerec()
-    sfr.load_encoding_images("./face_images/")
-
-    labels = np.array([
-        'unclassified',
-        'one', 'two', 'three',
-        'thumbs up', 'thumbs down',
-    ])
-
-    hand_tracker = HandTracker(max_num_hands=1)
-    hand_tracker.read_model('model.pkl')
-
-    tracked_name = ""
-    controlBool = 1
-    with OpencvCamera() as camera:
-        while cv2.waitKey(1) != ord('q'):
-            _, frame = camera.capture.read()
-            frame = cv2.flip(frame, 1) # mirror
-            
-            hand_tracker.process_frame(frame)
-            if hand_tracker.found_hand():
-                df_hands = hand_tracker.get_all_hand_dataframes(frame)
-                # hand_tracker.draw_all_hands(frame)
-
-                for i_hand, df_hand in enumerate(df_hands):
-                    label = labels[hand_tracker.predict(df_hand)]
-
-                    # display prediction
-                    lm = hand_tracker.solution_outputs.multi_hand_landmarks[i_hand].landmark
-                    x_pixel = int(np.mean([lm[0].x, lm[9].x]) * frame.shape[1])
-                    y_pixel = int(np.mean([lm[0].y, lm[9].y]) * frame.shape[0])
-                    cv2.putText(
-                        frame, label,
-                        org=(x_pixel, y_pixel),
-                        fontFace=cv2.FONT_HERSHEY_DUPLEX,
-                        fontScale=0.5,
-                        color=(0, 255, 0),
-                    )
-            hand_tracker.clear_solution_outputs()
-
-            time.sleep(0.03)
-            # Start of Face Recog
-            #detect faces
-            face_locations, face_names = sfr.detect_known_faces(frame)
-            if controlBool == 1 and len(face_locations) != 0:
-                tracked_name = face_names[0]
-                controlBool = 0
-            #Draw rectangle and print names
-            if len(face_locations) != 0 and face_names[0] == tracked_name:
-                y1,x1,y2,x2 = face_locations[0][0],face_locations[0][1],face_locations[0][2],face_locations[0][3]
-                cv2.putText(frame,face_names[0],(x1,y1 - 10),cv2.FONT_HERSHEY_DUPLEX,1,(255,0,0),2)
-                cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,200),2)
-            cv2.imshow('Frame',frame)
