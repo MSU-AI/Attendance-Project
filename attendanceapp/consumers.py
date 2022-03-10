@@ -1,8 +1,9 @@
+from cgitb import text
 import json
 
 from channels.generic.websocket import WebsocketConsumer
 
-from meh.collec import HandlerCollection, parse_directory
+from meh.collection import HandlerCollection, parse_directory
 
 # The camera consumer takes image data from the webcam (sent over websockets)
 # and sends back the processed metadata.
@@ -72,10 +73,12 @@ class CameraConsumer(WebsocketConsumer):
 
         # Process meta data:
 
-        meta = json.loads(text_data[0:text_data.index('}')+1])
+        meta_text = text_data[0:text_data.index('}')+1]
+
+        meta = json.loads(meta_text)
 
         # Send the data along:
 
         temp = hands.handle(meta['id'], text_data[index+1:])
 
-        self.send(temp)
+        self.send(meta_text + temp)

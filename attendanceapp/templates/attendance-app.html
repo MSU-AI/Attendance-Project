@@ -52,17 +52,21 @@ takeSnapShot = function () {
         // Simply create the metadata as a JSON string with key 
         // 'id' and value being the id of the event you wish to process.
 
-        // Send the image for processing:
+        // Send the image for face processing:
 
-        ws.send('{"id": "face"}' + str)
+        ws.send('{"id": "face"}' + str);
+
+        // Send the image for hand processing:
+
+        ws.send('{"id": "hand"}' + str);
 
         // Send data to the dummy handler:
 
-        ws.send('{"id": "dummy"}This is dummy data!')
+        ws.send('{"id": "dummy"}This is dummy data!');
 
-      // Raise an exception and show error handling
+       // Raise an exception and show error handling
 
-        ws.send('{"id": "error"}Raise an error!')
+        ws.send('{"id": "error"}Raise an error!');
     });
 }
 
@@ -108,9 +112,21 @@ ws.onopen = () => {
 
 let output = document.createElement("p")
 ws.onmessage = (message) => {
-        dataFromServer = JSON.parse(message.data);
+
+        // Decode any metadata we sent:
+
+        meta = message.data.slice(0, message.data.indexOf('}')+1);
+
+        // Get payload data:
+
+        payload = message.data.slice(message.data.indexOf('}')+1);
+
+        // Output some stuff:
+
+        dataFromServer = JSON.parse(payload);
         console.log("Server says:", JSON.stringify(dataFromServer));
-        output.innerText = JSON.stringify(dataFromServer)
+        console.log("Metadata: " + meta);
+        output.innerText = JSON.stringify(dataFromServer);
       };
 
     </script>

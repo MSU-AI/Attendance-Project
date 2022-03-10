@@ -8,7 +8,7 @@ their own handlers that can be loaded into the HandlerCollection.
 This file also contains other misc. handlers that may be useful in development!
 """
 
-from meh.form import BaseFormatter
+from meh.formatters import BaseFormatter
 
 
 class BaseHandler(object):
