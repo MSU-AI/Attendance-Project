@@ -1,8 +1,8 @@
-from HandRec.py import HandTracker
-# from FaceRec.py import
-#import the face recognition class
+from hand.py import HandTracker
+from face.py import FaceEncoder
 
 import HandTracker
+import FaceEncoder
 
 class AnalyzeFrame():
 
@@ -16,5 +16,3 @@ class AnalyzeFrame():
         pass
 
     #
-
-
