@@ -119,7 +119,7 @@ class FrameAnalyzer():
 
         Returns
         -------
-        faces : list of str (person: name, id, etc.)
+        faces : list
             The list of ``face.Face`` instances.
         """
         pass
