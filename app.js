@@ -1,71 +1,133 @@
-// CAMERA SETTINGS.
-
-  Webcam.set({
-    width: 220,
-    height: 190,
+Webcam.set({
+    width: 640,
+    height: 600,
     image_format: 'jpeg',
     jpeg_quality: 100
 });
 // attach camera to the element
-Webcam.attach('.camera');
-
-
-
-  // TAKE A SNAPSHOT.
-takeSnapShot = function () {
-    Webcam.snap(function (data_uri) {
-
-        
-        var str = data_uri
-        
-
-        ws.send(str)
-    });
-}
-
-
-
-
-// burst capture
-burst_snapshot = (n) => { // n is the number of picture you need
-    
-    i=0
-    burst = setInterval(function () {
-            
-            takeSnapShot()
-            i = i+1
-            console.log(i);
-            if (i == n) {
-                console.log('done');
-                clearInterval(burst)
-            }
-
-        },3000) // 3000 is 3 seconds per image
-
-}
-
-
+Webcam.attach('#camera');
 
 /* Checking the protocal */
 let WS_URL
-if (location.protocal == 'http:'){
+if (location.protocol == 'http:'){
+    console.log("HTTP Connection")
     WS_URL = "ws://localhost:8000/ws/camera";
 }
 
-if (location.protocal == 'https:'){
+if (location.protocol == 'https:'){
     WS_URL =  "wss://test.msuaiclub.com:443/ws/camera"
 }
 
-const FPS = 3;
+// make connection
 const ws = new WebSocket(WS_URL);
 ws.onopen = () => {
   console.log(`Connected to ${WS_URL}`);
 }
 
-let output = document.createElement("p")
+// set camera click
+
+function click() {
+    
+    var i = 0
+    setInterval(function () {
+        
+        $(window).on('load', function(){
+            setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+          });
+        
+        takeSnapShot()
+        i = i+1
+        console.log(i);
+
+    },100) 
+}
+
+// TAKE A SNAPSHOT.
+takeSnapShot = function () {
+Webcam.snap(function (data_uri) {
+
+    
+    var str = data_uri
+    
+    // Here is where the metadata and payload are defined.
+    // Simply create the metadata as a JSON string with key 
+    // 'id' and value being the id of the event you wish to process.
+
+    // Send the image for face processing:
+
+    if (flag == 'face') {
+        ws.send('{"id": "face"}' + str);
+    }
+    
+
+    // Send the image for hand processing:
+    if (flag == 'hand') {
+        ws.send('{"id": "hand"}' + str);
+    }
+    
+
+    // Send data to the dummy handler:
+    if (flag == 'dummy') {
+        ws.send('{"id": "dummy"}This is dummy data!');
+    }
+    
+
+    // Raise an exception and show error handling
+    if (flag == 'error') {
+        ws.send('{"id": "error"}Raise an error!');
+    }
+    
+})};
+
+
+function handRec() {
+    flag = 'hand'
+    $('#info').text('Please give a Thumbs Up');
+    click()
+
+}
+
+function faceRec() {
+    flag = 'face'
+    $('#info').text("Please position your face");
+    click()
+}
+
 ws.onmessage = (message) => {
-        dataFromServer = JSON.parse(message.data);
-        console.log("Server says:", JSON.stringify(dataFromServer));
-        output.innerText = JSON.stringify(dataFromServer)
-      };
+
+    // Decode any metadata we sent:
+
+    meta = message.data.slice(0, message.data.indexOf('}')+1);
+
+    // Get payload data:
+
+    payload = message.data.slice(message.data.indexOf('}')+1);
+
+    // Output some stuff:
+
+    data = JSON.parse(payload);
+    /* console.log("Server says:", JSON.stringify(data));
+    console.log("Metadata: " + meta);
+    output.innerText = JSON.stringify(data); */
+
+    if (meta == 'hand') {
+        
+        if (JSON.stringify(data) == 'thumpsUp') {
+            
+            $('#info').text("Please position your face");
+            faceRec()
+
+        }
+    }
+
+    if (meta == 'face') {
+        
+        $('#info').text(JSON.stringify(data));
+    }
+
+
+  };
+
+handRec()
+
 
