@@ -42,6 +42,7 @@ function click() {
     },100) 
 }
 
+var flag = ''
 // TAKE A SNAPSHOT.
 takeSnapShot = function () {
 Webcam.snap(function (data_uri) {
