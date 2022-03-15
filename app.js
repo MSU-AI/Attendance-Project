@@ -124,6 +124,7 @@ ws.onmessage = (message) => {
     if (meta == 'face') {
         
         $('#info').text(JSON.stringify(data));
+        handRec()
     }
 
 
