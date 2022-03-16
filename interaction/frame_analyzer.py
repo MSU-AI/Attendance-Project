@@ -4,14 +4,16 @@
 import cv2
 from interaction.frame_analyzer import FrameAnalyzer
 
-frame = cv2.imread('sample/thumbsup/image.jpg')
-analyzer = FrameAnalyzer(frame, 'BGR')
-pred_hand = analyzer.recognize_hand()
-print(pred_hand) # Hand: thumbs up
+analyzer = FrameAnalyzer()
 
-frame = cv2.imread('sample/1/image.jpg')
-pred_hand = analyzer = FrameAnalyzer(frame, 'BGR').recognize_hand()
-print(pred_hand) # Hand: number 1
+frame = cv2.imread('hand_images/thumbsup/image.jpg')
+analyzer.set_frame(frame, 'BGR')
+hand = analyzer.recognize_hand()
+print(hand) # Hand: thumbs up
+
+frame = cv2.imread('hand_images/1/image.jpg')
+hand = analyzer.set_frame(frame, 'BGR').recognize_hand()
+print(hand) # Hand: number 1
 ```
 """
 import cv2
