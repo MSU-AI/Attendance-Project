@@ -1,19 +1,23 @@
 """This module contains the final APIs.
 
 ```python
-import interaction.frame_analyzer as fa
+import cv2
+from interaction.frame_analyzer import FrameAnalyzer
 
-frame = cv2.imread('path/to/image.jpg') # BGR format
-analyzer = fa.FrameAnalyzer(frame)
-analyzer.standardize_frame()
-face = analyzer.identify_face()
-hand = analyzer.identify_hand()
+frame = cv2.imread('sample/thumbsup/image.jpg')
+analyzer = FrameAnalyzer(frame, 'BGR')
+pred_hand = analyzer.recognize_hand()
+print(pred_hand) # Hand: thumbs up
+
+frame = cv2.imread('sample/1/image.jpg')
+pred_hand = analyzer = FrameAnalyzer(frame, 'BGR').recognize_hand()
+print(pred_hand) # Hand: number 1
 ```
 """
 import cv2
 
-from .face import Face
-from .hand import Hand
+from . import face
+from . import hand
 
 class FrameAnalyzer():
     """Class that analyzes image frame with AI models.
@@ -25,10 +29,26 @@ class FrameAnalyzer():
     standard_colorspace = 'RGB'
     standard_size = (480, 480)
 
-    def __init__(
+    def __init__(self, init_classifiers=True, init_mp_hands=True):
+        """
+        Initialize an instance of AnalyzeFrame.
+
+        Parameters
+        ----------
+        init_classifiers : bool, default True
+            Whether to initialize the classifiers, i.e. reading in the trained models.
+        init_mp_hands : bool, default True
+            Whether to initialize the hand.MediaPipeHands().
+        """
+        if init_classifiers:
+            self.init_classifiers()
+        if init_mp_hands:
+            self.init_mp_hands()
+    
+    def set_frame(
         self,
         frame,
-        rgb='RGB',
+        rgb,
         standardize=True,
     ):
         """
@@ -38,18 +58,24 @@ class FrameAnalyzer():
         ----------
         frame : numpy.ndarray
             The frame to be analyzed.
-        rgb : str, default 'RGB'
-            The color space of the frame.
+        rgb : str, e.g. 'BGR' for ``cv2.imread()``
+            The color space of the frame. Is there a way to detect from frame automatically?
         standardize : bool, default True
             Whether to standardize the frame.
+        
+        Returns
+        -------
+        self : ``FrameAnalyzer``
+            The self instance.
         """
         self.frame = frame
         self.rgb = rgb
         if standardize:
-            pass
+            self.standardize_frame()
+        return self
     
     @classmethod
-    def standardize_frame_colorspace(cls, frame):
+    def standardize_frame_colorspace(cls, frame, input_colorspace):
         """Convert the colorspace of self.frame into the standard.
 
         By default, functions like ``cv2.imread()`` reads in as BGR format.
@@ -66,11 +92,19 @@ class FrameAnalyzer():
         frame : numpy.ndarray
             Frame in the standard colorspace.
         """
-        pass
+        if input_colorspace == cls.standard_colorspace:
+            return frame
+        trans = getattr(cv2, f'COLOR_{input_colorspace}2{cls.standard_colorspace}')
+        return cv2.cvtColor(frame, trans)
     
     @classmethod
     def standardize_frame_size(cls, frame):
         """Resize the frame to a standard size.
+
+        If frame is larger than the standard size, it will be shrinked.  If the
+        frame is smaller than the standard size, it will be padded (not
+        enlarged) with black background. The aspect ratio is always respected.
+        Any remaining space will be filled with black.
 
         Parameters
         ----------
@@ -82,15 +116,20 @@ class FrameAnalyzer():
         frame : numpy.ndarray
             Frame in the standard size.
         """
-        pass
+        return frame
 
-    @classmethod
-    def standardize_frame(self, frame):
+    def standardize_frame(self):
         """Standardize the frame.
 
         This is just a wrapper of all the standardization functions.
         """
-        pass
+        self.frame = self.standardize_frame_colorspace(self.frame, self.rgb)
+
+    def init_classifiers(self):
+        self.hand_classifier = hand.HandGestureClassifier()
+    
+    def init_mp_hands(self):
+        self.mp_hands = hand.MediapipeHands()
 
     def recognize_all_hands(self):
         """Recognize all hands in the frame.
@@ -105,14 +144,17 @@ class FrameAnalyzer():
     def recognize_hand(self):
         """Recognize the hand.
 
-        In the case of multiple hands detected, it will...?
+        In the case of multiple hands detected, it will only return the best hand.
 
         Returns
         -------
-        gesture : str
-            The hand gesture.
+        hand : ``hand.Hand instance`` or None
+            If no hand is detected, returns None.
         """
-        pass
+        self.mp_hands.process_frame(self.frame)
+        if self.mp_hands.n_hands_found > 0:
+            best_landmarks = self.mp_hands.get_best_landmarks()
+            return self.hand_classifier.predict(best_landmarks)
 
     def recognize_all_faces(self):
         """Recognize all faces in the frame.
