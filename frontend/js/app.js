@@ -26,23 +26,44 @@ ws.onopen = () => {
 
 // set camera click
 
+var i = 0;
+
 function click() {
     
-    var i = 0
     setInterval(function () {
         
-        $(window).on('load', function(){
-            setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
-          });
+        // $(window).on('load', function(){
+        //     setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+        //   });
         
         takeSnapShot();
-        i = i+1
+        i = i+1;
         console.log(i);
 
-    },500) 
+    },750) 
 }
 
-var flag = ''
+var flag = 'hand';
+
+function event_loop() {
+
+    while (true) {
+
+        if (flag == 'hand') {
+
+            handRec();
+        }
+
+        if (flag == 'face') {
+
+            faceRec();
+        }
+
+        sleep(100);
+
+    }
+}
+
 // TAKE A SNAPSHOT.
 takeSnapShot = function () {
 Webcam.snap(function (data_uri) {
@@ -57,13 +78,13 @@ Webcam.snap(function (data_uri) {
     // Send the image for face processing:
 
     if (flag == 'face') {
-        ws.send('{"id": "face"}' + str);
+        ws.send('{"id": "face", "token": ' + i + '}' + str);
     }
     
 
     // Send the image for hand processing:
     if (flag == 'hand') {
-        ws.send('{"id": "hand"}' + str);
+        ws.send('{"id": "hand", "token": ' + i + '}' + str);
     }
     
 
@@ -82,14 +103,14 @@ Webcam.snap(function (data_uri) {
 
 
 function handRec() {
-    flag = 'hand';
+    //flag = 'hand';
     $('#info').text('Please give a Thumbs Up');
     click();
 
 }
 
 function faceRec() {
-    flag = 'face';
+    //flag = 'face';
     $('#info').text("Please position your face");
     click();
 }
@@ -121,7 +142,7 @@ ws.onmessage = (message) => {
             console.log("Face recogntion now!");
             
             $('#info').text("Please position your face");
-            faceRec();
+            flag = 'face';
 
         }
     }
@@ -129,12 +150,11 @@ ws.onmessage = (message) => {
     if (meta_data['id'] == 'face') {
         
         $('#info').text(JSON.stringify(data));
-        handRec();
+        flag = 'hand';
     }
 
 
   };
 
-handRec()
-
+event_loop();
 
