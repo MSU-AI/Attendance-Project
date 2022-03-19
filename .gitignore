@@ -104,7 +104,7 @@ db.sqlite3
 
 # VSCode
 
-.vscode/
+**/.vscode/
 
 # IntelliJ project files
 
