@@ -12,6 +12,7 @@ from meh.formatters import BaseFormatter
 
 
 class BaseHandler(object):
+
     """
     BaseHandler - Class all handlers MUST inherit!
 

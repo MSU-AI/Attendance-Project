@@ -63,6 +63,7 @@ class HandlerCollection(object):
 
     If an error handler is registered under id of 'BaseException',
     then this handler will be registered as a global error handler.
+
     """
 
     GLOBAL = "GLOBAL"
