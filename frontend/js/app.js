@@ -31,9 +31,9 @@ function click() {
     var i = 0
     setInterval(function () {
         
-        $(window).on('load', function(){
-            setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
-          });
+        // $(window).on('load', function(){
+        //     setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+        //   });
         
         takeSnapShot();
         i = i+1
