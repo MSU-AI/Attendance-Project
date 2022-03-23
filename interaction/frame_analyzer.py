@@ -206,3 +206,6 @@ class FrameAnalyzer():
         enc = self.face_classifier.encode_face(self.frame)
         if enc is not None:
             return self.face_classifier.find_best_matching_face_index(enc, list_of_encs)
+    
+    def _get_face_encoding(self, num_jitters=5, model='large'):
+        return self.face_classifier.encode_face(self.frame, num_jitters=num_jitters, model=model)
