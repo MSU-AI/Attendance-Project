@@ -18,8 +18,12 @@ print(hand) # Hand: number 1
 """
 import cv2
 
-from . import face
-from . import hand
+try:
+    from . import face
+    from . import hand
+except ImportError:
+    import face
+    import hand
 
 class FrameAnalyzer():
     """Class that analyzes image frame with AI models.
@@ -29,7 +33,7 @@ class FrameAnalyzer():
     - Face recognition
     """
     standard_colorspace = 'RGB'
-    standard_size = (480, 480)
+    standard_size = (360, 360)
 
     def __init__(self, init_classifiers=True, init_mp_hands=True):
         """
@@ -98,7 +102,25 @@ class FrameAnalyzer():
             return frame
         trans = getattr(cv2, f'COLOR_{input_colorspace}2{cls.standard_colorspace}')
         return cv2.cvtColor(frame, trans)
+
+    @classmethod
+    def _crop_landscape(cls, frame):
+        shape_x, shape_y = frame.shape[1], frame.shape[0]
+        if shape_x > shape_y:
+            x0 = int((shape_x - shape_y) / 2)
+            frame = frame[:, x0:x0+shape_y]
+        return frame
     
+    @classmethod
+    def _resize_by_smaller(cls, frame, smaller_side_target_size=None):
+        s_size = smaller_side_target_size
+        if s_size is None:
+            s_size = min(cls.standard_size)
+        shape_x, shape_y = frame.shape[1], frame.shape[0]
+        ratio = s_size / min(shape_x, shape_y)
+        frame = cv2.resize(frame, (0, 0), fx=ratio, fy=ratio)
+        return frame
+
     @classmethod
     def standardize_frame_size(cls, frame):
         """Resize the frame to a standard size.
@@ -118,6 +140,8 @@ class FrameAnalyzer():
         frame : numpy.ndarray
             Frame in the standard size.
         """
+        frame = cls._crop_landscape(frame)
+        frame = cls._resize_by_smaller(frame)
         return frame
 
     def standardize_frame(self):
@@ -129,6 +153,7 @@ class FrameAnalyzer():
 
     def init_classifiers(self):
         self.hand_classifier = hand.HandGestureClassifier()
+        self.face_classifier = face.FaceClassifier()
     
     def init_mp_hands(self):
         self.mp_hands = hand.MediapipeHands()
@@ -168,7 +193,7 @@ class FrameAnalyzer():
         """
         pass
 
-    def recognize_face(self):
+    def recognize_face(self, list_of_encs):
         """Recognize the face.
 
         In the case of multiple faces detected, it will...?
@@ -178,4 +203,6 @@ class FrameAnalyzer():
         face : str
             The face.
         """
-        pass
+        enc = self.face_classifier.encode_face(self.frame)
+        if enc is not None:
+            return self.face_classifier.find_best_matching_face_index(enc, list_of_encs)

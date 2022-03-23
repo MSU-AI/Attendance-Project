@@ -6,8 +6,6 @@ import mediapipe as mp
 import numpy as np
 import pandas as pd
 
-from . import PROJECT_DIR
-
 class Hand:
     gestures = [
         'unclassified',
@@ -192,7 +190,7 @@ class HandGestureClassifier:
 
     def _read_in_trained_model(self, path=None):
         if path is None:
-            path = PROJECT_DIR / 'model.pkl'
+            path = './model.pkl'
         with open(path, 'rb') as file:
             model = pickle.load(file)
         return model

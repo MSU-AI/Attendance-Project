@@ -3,21 +3,11 @@
 import face_recognition as fr
 import numpy as np
 
+class FaceClassifier:
+    def __init__(self):
+        pass
 
-class Face:
-    def __init__(self, std_frame, list_of_encs):
-        """
-        Parameters
-        ----------
-        std_frame : set of numpy arrays
-            original image of face to identify
-        list_of_encs : list of numpy arrays
-            list of saved face encodings
-        """
-        self.std_frame = std_frame
-        self.list_of_encs = list_of_encs
-
-    def encode_face(std_frame):
+    def encode_face(self, std_frame, num_jitters=1, model='small'):
         """Returns encoded face - 128 dimension array per face of image
         Parameters
         ----------
@@ -26,10 +16,19 @@ class Face:
         The frame of the image that contains the face.
         """
         face_locations = fr.face_locations(std_frame)
-        face_encodings = fr.face_encodings(std_frame, face_locations)
+        if len(face_locations) == 0:
+            return
+        face_encodings = fr.face_encodings(
+            std_frame,
+            face_locations,
+            num_jitters=num_jitters,
+            model=model,
+        )
+        if len(face_encodings) == 0:
+            return
         return face_encodings[0]
 
-    def find_best_face(enc, list_of_encs):
+    def find_best_matching_face_index(self, enc, list_of_encs):
         """Compares and returns the most similar face/encoding in list of 
         existing encoded faces.
         Parameters
