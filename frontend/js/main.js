@@ -75,6 +75,8 @@ function project() {
                     
                     
                 }
+
+                sleep(100);
         
         
             }

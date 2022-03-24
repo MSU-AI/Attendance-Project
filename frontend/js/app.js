@@ -7,7 +7,7 @@ Webcam.set({
 // attach camera to the element
 Webcam.attach('#camera');
 
-/* Checking the protocal */
+/* Checking the protocol */
 let WS_URL
 if (location.protocol == 'http:'){
     console.log("HTTP Connection")
