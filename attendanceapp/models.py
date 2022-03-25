@@ -1,9 +1,16 @@
 from django.db import models
 
 
+class Group(models.Model):
+    
+    name = models.CharField('name', max_length=200)
+
+
 class Person(models.Model):
     class Meta:
         verbose_name_plural = "people"  # Call them "people" rather than "persons"
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=200)
     join_date = models.DateTimeField('date joined')
