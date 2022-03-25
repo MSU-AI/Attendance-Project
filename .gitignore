@@ -115,5 +115,4 @@ gen
 
 # Misc. Django files:
 
-static/
 *.sock
