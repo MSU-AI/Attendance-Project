@@ -46,40 +46,43 @@ function project() {
                 i = i+1;
                 console.log(i);
         
-            },750) 
+            },750);
         }
         
         var flag = 'hand';
         
         function event_loop() {
         
-            while (true) {
+
                 
                 
+                setInterval(
+                    ()=>{
+                        if (flag == 'hand') {
+                    
+                            $("#info").text("Starting Hand Rec...");
+                            setTimeout(handRec, 2000);
+                            
         
+                            
+                        }
+                
+                        if (flag == 'face') {
+                            
+                            $("#info").text("Starting Face Rec...");
+                            setTimeout(faceRec, 2000);
+                    }
+                }, 2000
+                );
                 
 
-                if (flag == 'hand') {
+                
                     
-                    $("#info").text("Starting Hand Rec...");
-                    setTimeout(handRec, 2000);
                     
 
-                    
-                }
-        
-                if (flag == 'face') {
-                    
-                    $("#info").text("Starting Face Rec...");
-                    setTimeout(faceRec, 2000);
-                    
-                    
-                }
-
-                sleep(100);
         
         
-            }
+            
         }
         
         // TAKE A SNAPSHOT.
@@ -177,7 +180,6 @@ function project() {
         
         
         event_loop();
-        
         
     });
 
