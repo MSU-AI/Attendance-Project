@@ -1,0 +1,75 @@
+*, ::after, ::before{
+
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    height: 100%;
+    width: 100%;
+
+}
+
+.container-fluid{
+
+    height: 100%;
+    width: 100%;
+}
+
+.row{
+
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.camera-container{
+
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    background-color: antiquewhite;
+}
+
+#camera{
+
+    width: 600px;
+    height: 600px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.info{
+
+    background-color: aquamarine;
+    display: grid;
+    place-items: center;
+
+    #info{
+
+        font-size: 8em;
+    }
+}
+
+@media (max-width: 643px) {
+    .camera { 
+    height: 50%;
+    }
+
+    #camera{
+
+        height: 550px;
+        width: 600px;
+    }
+    .info{
+
+        height: 50%;
+    }
+    }
+
+     @media (min-width: 644px) {  
+    .mydivs{ height: 100%; }
+    }
