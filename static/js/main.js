@@ -1,7 +1,4 @@
-const signUp = document.getElementById("sign-up")
-const cont = document.getElementById("continue")
-$(signUp).css("visibility", "hidden");
-$(cont).css("visibility", "hidden");
+
 
 Webcam.set({
     width: 640,
@@ -55,7 +52,8 @@ function project() {
         }
         
         var flag = 'hand';
-        
+        var eventFlag = true
+
         function event_loop() {
         
 
@@ -64,8 +62,10 @@ function project() {
                 setInterval(
                     ()=>{
 
-                        if (flag == 'hand') {
-                            $("#info").css("visibility", "visible");
+                        console.log("eventloop new iteration");
+                        if (eventFlag) {
+                            if (flag == 'hand') {
+            
                             $("#info").text("Starting Hand Rec...");
                             setTimeout(handRec, 2000);
                             
@@ -74,10 +74,11 @@ function project() {
                         }
                 
                         if (flag == 'face') {
-                            $("#info").css("visibility", "visible");
                             $("#info").text("Starting Face Rec...");
                             setTimeout(faceRec, 2000);
-                    }
+                        }
+                        }
+                        
                 }, 2000
                 );
                 
@@ -133,7 +134,7 @@ function project() {
             //flag = 'hand';
             $("#info").css("visibility", "visible");
             $('#info').text('Please give a Thumbs Up');
-            setTimeout(click,2000);
+            setTimeout(click,1000);
         
         }
         
@@ -141,7 +142,7 @@ function project() {
             //flag = 'face';
             $("#info").css("visibility", "visible");
             $('#info').text("Please position your face");
-            setTimeout(click,2000);
+            setTimeout(click,1000);
         }
         
         ws.onmessage = (message) => {
@@ -184,25 +185,31 @@ function project() {
                 if (name == 'unknown') {
 
                     
-                    $(signUp).css("visibility", "visible");
-                    $(cont).css("visibility", "visible");
-                    $("#info").css("visibility", "hidden");
+                    eventFlag = false
+                    $("#name-unknown-box").css("display", "block");
+                    $("#info").css("display", "none");
+
                     nameDisplay = "Sorry, you were not recognised."
                     $("#info").text(nameDisplay);
-                    setTimeout(() => {
-                        $("#info").text("Redirecting to Sign-up Page");
-                    }, 2000);
-                    setTimeout(() => {
-                        window.location.href = "www.msuaiclub.com"
-                    }, 8000);
 
+                    $("#continue").click(function (e) { 
+                        e.preventDefault();
+                        $("#name-unknown-box").css("display", "none");
+                        $("#info").css("display", "block");
+                        eventFlag = true
+                    });
                     
                     
 
                 } else {
-                    $("#info").css("visibility", "visible");
+                    eventFlag = false
                     nameDisplay = "Name: " + name
                     $('#info').text(nameDisplay);
+                    setTimeout(() => {
+
+                        eventFlag = true
+
+                    }, 2000)
                 }
                  
                 

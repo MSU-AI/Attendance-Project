@@ -38,6 +38,16 @@
     display: grid;
     place-content: center;
     font-size: 30px;
+
+  }
+
+  #name-unkown-box{
+
+    height: 100vh;
+    font-size: 30px;
+    display: grid;
+    place-items: center;
+    display: none;
   }
   
   @media (max-width: 643px) {
