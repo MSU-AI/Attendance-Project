@@ -42,32 +42,36 @@ function project() {
             
             setInterval(function () {
                 
-    
+                if (eventFlag) {
+                    takeSnapShot();
+                    i = i+1;
+                    console.log(i);
+                }
                 
-                takeSnapShot();
-                i = i+1;
-                console.log(i);
+                
         
             },750);
         }
         
         var flag = 'hand';
         var eventFlag = true
-
+        var onceHM = true
         function event_loop() {
         
 
                 
-                
+                k = 0
                 setInterval(
                     ()=>{
 
                         console.log("eventloop new iteration");
                         if (eventFlag) {
                             if (flag == 'hand') {
-            
-                            $("#info").text("Starting Hand Rec...");
-                            setTimeout(handRec, 2000);
+                                if (onceHM){
+                                    $("#info").text("Starting Hand Rec...");
+                                    onceHM = false
+                                }
+                            setTimeout(handRec, 5000);
                             
         
                             
@@ -75,7 +79,7 @@ function project() {
                 
                         if (flag == 'face') {
                             $("#info").text("Starting Face Rec...");
-                            setTimeout(faceRec, 2000);
+                            setTimeout(faceRec, 5000);
                         }
                         }
                         
@@ -83,6 +87,9 @@ function project() {
                 );
                 
 
+                    
+               
+    
                 
                     
                     
@@ -142,7 +149,7 @@ function project() {
             //flag = 'face';
             $("#info").css("visibility", "visible");
             $('#info').text("Please position your face");
-            setTimeout(click,1000);
+            setTimeout(click,3000);
         }
         
         ws.onmessage = (message) => {
@@ -192,13 +199,14 @@ function project() {
                     $("#info").css("display", "none");
 
                     nameDisplay = "Sorry, you were not recognised."
-                    $("#info").text(nameDisplay);
+                    $(".name-display").text(nameDisplay);
 
                     $("#continue").click(function (e) { 
                         e.preventDefault();
                         $("#name-unknown-box").css("display", "none");
                         $("#info").css("display", "block");
                         eventFlag = true
+                        onceHM = true
                     });
                     
                     
@@ -206,12 +214,15 @@ function project() {
                 } else {
                     eventFlag = false
                     $("#link").css("display", "none");
+                    $("#name-unknown-box").css("display", "block");
                     nameDisplay = "Name: " + name
-                    $('#name-unkown-box').text(nameDisplay);
+                    $('#name-display').text(nameDisplay);
                     setTimeout(() => {
 
                         eventFlag = true
-
+                        $("#name-unknown-box").css("display", "none");
+                        $("#info").css("display", "block");
+                        onceHM = true
                     },8000)
                 }
                  
