@@ -1,4 +1,3 @@
-from cgitb import text
 import json
 
 from channels.generic.websocket import WebsocketConsumer
@@ -79,6 +78,6 @@ class CameraConsumer(WebsocketConsumer):
 
         # Send the data along:
 
-        temp = hands.handle(meta['id'], text_data[index+1:])
+        temp = hands.handle(meta['id'], text_data[index+1:], meta)
 
         self.send(meta_text + temp)

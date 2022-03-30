@@ -392,7 +392,7 @@ class HandlerCollection(object):
 
                 yield key, hand
 
-    def handle(self, id: str, data: Any) -> Any:
+    def handle(self, id: str, data: Any, meta: dict) -> Any:
         """
         Sends the given data though the event handlers.
 
@@ -407,6 +407,8 @@ class HandlerCollection(object):
         :type id: str
         :param data: Data to be processed
         :type data: Any
+        :param meta: Metadata for the given request
+        :type meta: dict
         :return: Data to be sent back to the client
         :rtype: Any
         """
@@ -436,7 +438,7 @@ class HandlerCollection(object):
 
             try:
 
-                temp = hand._meta_handle(data)
+                temp = hand._meta_handle(data, meta)
 
             except Exception as e:
 

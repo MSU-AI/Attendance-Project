@@ -67,6 +67,8 @@ class BaseHandler(object):
 
         self.convert = convert  # Formatter used for conversion
         self.revert = revert  # Formatter used for reverting
+        
+        self.meta = {}  # Metadata for each request given
 
     def start(self):
         """
@@ -159,7 +161,7 @@ class BaseHandler(object):
 
         raise NotImplementedError("This method should be overridden in the child class!")
 
-    def _meta_handle(self, data):
+    def _meta_handle(self, data, meta):
         """
         Meta handle method.
 
@@ -171,6 +173,8 @@ class BaseHandler(object):
         :return: Data to be sent over a websocket
         :rtype: Any
         """
+
+        self.meta = meta
 
         # Convert the in data:
 
