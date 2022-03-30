@@ -186,6 +186,8 @@ function project() {
 
                     
                     eventFlag = false
+                    $("#link").css("display", "inline-block");
+                    $("#continue").css("display", "inline-block");
                     $("#name-unknown-box").css("display", "block");
                     $("#info").css("display", "none");
 
@@ -203,13 +205,14 @@ function project() {
 
                 } else {
                     eventFlag = false
+                    $("#link").css("display", "none");
                     nameDisplay = "Name: " + name
-                    $('#info').text(nameDisplay);
+                    $('#name-unkown-box').text(nameDisplay);
                     setTimeout(() => {
 
                         eventFlag = true
 
-                    }, 2000)
+                    },8000)
                 }
                  
                 
