@@ -155,6 +155,7 @@ ws.onmessage = (message) => {
             
             $('#info').text("Please position your face");
             flag = 'face';
+            event_loop();
 
         }
     }
@@ -197,7 +198,8 @@ ws.onmessage = (message) => {
         }
 
 }   
-flag = 'hand'
+
 }    
 
+flag = 'hand';
 event_loop();
