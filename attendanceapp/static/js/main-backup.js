@@ -43,9 +43,10 @@ $(".ctn").click(function (e) {
 
 /* Defining the event_loop */
 var flag = 'hand'
+let event_id;
 function event_loop() {
     
-    setInterval(() => {
+    event_id = setInterval(() => {
         
         if (flag == 'hand') {
             
@@ -73,10 +74,11 @@ function event_loop() {
 
 
 /*  defining the click function */
+let click_id;
 var i = 0 ;
 function click() {
             
-    const click = setInterval(function () {
+    click_id = setInterval(function () {
         
         setTimeout(takeSnapShot, 2000);
         i = i+1;
@@ -147,7 +149,8 @@ ws.onmessage = (message) => {
         
         if (data[0] == 'thumbs up') {
 
-            clearInterval(click)
+            clearInterval(click_id)
+            clearInterval(event_id)
             console.log("Face recogntion now!");
             
             $('#info').text("Please position your face");
@@ -158,7 +161,8 @@ ws.onmessage = (message) => {
 
     if (meta_data['id'] == 'face') {
                 
-        clearInterval(click)        
+        clearInterval(click_id)
+        clearInterval(event_id)        
         var name = JSON.stringify(data).slice(52,-3)
         if (name == 'unknown') {
 
@@ -166,7 +170,8 @@ ws.onmessage = (message) => {
             eventFlag = false
             $("#link").css("display", "inline-block");
             $("#continue").css("display", "inline-block");
-            $("#name-unknown-box").css("display", "block");
+            $("#name-unknown-box").cs
+            s("display", "block");
             $("#info").css("display", "none");
 
             nameDisplay = "Sorry, you were not recognised."
