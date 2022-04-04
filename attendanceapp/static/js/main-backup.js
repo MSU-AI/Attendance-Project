@@ -38,6 +38,7 @@ $(".ctn").click(function (e) {
     e.preventDefault();
     $("#landing-container").css("display", "none");
     $("#camera-page").css("display", "block");
+    event_loop();
 })
 
 
@@ -54,8 +55,8 @@ function event_loop() {
             setTimeout(function handRec() {
                 $("#info").css("visibility", "visible");
                 $('#info').text('Please give a Thumbs Up');
-                setTimeout(click,3000);
-            }, 5000);
+                click();
+            }, 2000);
         }
 
 
@@ -66,10 +67,10 @@ function event_loop() {
                 
                 $("#info").css("visibility", "visible");
                 $('#info').text("Please position your face");
-                setTimeout(click,3000)
-            }, 5000);
+                click();
+            }, 2000);
         }
-    }, 2000);
+    }, 8000);
 }
 
 
@@ -152,10 +153,8 @@ ws.onmessage = (message) => {
             clearInterval(click_id)
             clearInterval(event_id)
             console.log("Face recogntion now!");
-            
             $('#info').text("Please position your face");
             flag = 'face';
-            event_loop();
 
         }
     }
@@ -198,8 +197,6 @@ ws.onmessage = (message) => {
         }
 
 }   
-
+flag = 'hand'
 }    
 
-flag = 'hand';
-event_loop();
