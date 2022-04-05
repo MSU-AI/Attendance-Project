@@ -1,7 +1,7 @@
 /* Setting Webcam */
 Webcam.set({
-    width: 640,
-    height: 600,
+    width: 740,
+    height: 700,
     image_format: 'jpeg',
     jpeg_quality: 100
 });
@@ -148,7 +148,7 @@ ws.onmessage = (message) => {
         
     if (meta_data['id'] == 'hand' && flag == 'hand') {
         
-        if (data[0] == 'thumbs up') {
+        if (data['hand'] == 'thumbs up') {
 
             clearInterval(click_id)
             clearInterval(event_id)
@@ -195,8 +195,8 @@ ws.onmessage = (message) => {
 
             },8000)
         }
-
+        flag = 'hand'
 }   
-flag = 'hand'
+
 }    
 
