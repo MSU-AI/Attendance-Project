@@ -98,8 +98,10 @@ takeSnapShot = function () {
     })};
 
 // Getting info through the websocket
+// let token = 0;
 ws.onmessage = (message) => {
     
+    // token += 1
     // Decode any metadata we sent:
 
     meta = message.data.slice(0, message.data.indexOf('}')+1);
@@ -126,6 +128,17 @@ ws.onmessage = (message) => {
             start();
         }
     }
+
+    // if (token == 5){
+    //     flag = 1;
+    //     start();
+    // }
+
+    // if (token == 10){
+    //     flag = 0;
+    //     token = 0;
+    //     start();
+    // }
 
     if (meta_data['id'] == 'face') {
                        
