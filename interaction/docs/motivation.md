@@ -1,0 +1,1 @@
+With contnactless features becoming more prevalent, traditional attendance taking methods are becoming less viable. 
