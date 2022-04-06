@@ -157,10 +157,10 @@ class FaceRecognize(BaseHandler):
 
         # Add a date event to the person:
 
-        date = AttendanceEvent(person=Person.objects.get(name=names[result]), event_date=timezone.now())
+        date = AttendanceEvent(person=names[result], event_date=timezone.now())
 
         date.save()
 
         return {
-            'name': names[result]
+            'name': names[result].name
         }
