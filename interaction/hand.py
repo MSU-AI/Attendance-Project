@@ -190,7 +190,7 @@ class HandGestureClassifier:
 
     def _read_in_trained_model(self, path=None):
         if path is None:
-            path = './model.pkl'
+            path = './interaction/model.pkl'
         with open(path, 'rb') as file:
             model = pickle.load(file)
         return model

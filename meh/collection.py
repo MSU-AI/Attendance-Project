@@ -444,7 +444,7 @@ class HandlerCollection(object):
 
                 # Handle the exception:
 
-                temp = self.error_handle(e, hand, data, 'handle', e)
+                temp = self.error_handle(e, hand, data, 'handle', e, meta)
 
             finally:
 
@@ -466,7 +466,7 @@ class HandlerCollection(object):
 
         return final_data
 
-    def error_handle(self, id: Exception, hand: BaseHandler, data: Any, oper: str, exc: Exception):
+    def error_handle(self, id: Exception, hand: BaseHandler, data: Any, oper: str, exc: Exception, meta: dict):
         """
         Handles the given exception.
 
@@ -510,7 +510,7 @@ class HandlerCollection(object):
                 'operation': oper,
                 'data': data,
                 'excp': exc
-            })
+            }, meta)
 
             # Check if data is to be added:
 

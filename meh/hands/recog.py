@@ -34,8 +34,6 @@ class HandRecognize(BaseHandler):
 
         super().__init__(name="HandRecognize", convert=Base64ImageFormatter(), revert=JSONFormatter())
 
-        self.num = 0
-
     def handle(self, data: bytes):
         """
         Checks for hand gestures in the given frame.
@@ -62,10 +60,6 @@ class HandRecognize(BaseHandler):
 
         print("Hand result: {}".format(result))
         print("Type: {}".format(type(result)))
-
-        self.num += 1
-
-        print(self.num)
 
         if result is None:
             
