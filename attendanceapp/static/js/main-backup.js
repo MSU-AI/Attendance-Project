@@ -172,8 +172,13 @@ ws.onmessage = (message) => {
 
             $("#info").text(name);
         }
-        flag = 'hand'
-        $('#info').text("Starting Hand Recognition");
+        flag = 'hand';
+        setTimeout(()=>{
+            $('#info').text("Starting Hand Recognition");
+        }, 2000
+
+        )
+        
 
     }    
 }   
