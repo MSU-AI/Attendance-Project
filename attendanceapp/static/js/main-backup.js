@@ -168,11 +168,12 @@ ws.onmessage = (message) => {
 
             
             $("#info").text(name);
-            };
         } else{
 
             $("#info").text(name);
         }
         flag = 'hand'
         $('#info').text("Starting Hand Recognition");
+
+    }    
 }   
