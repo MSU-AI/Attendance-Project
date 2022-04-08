@@ -228,7 +228,7 @@ ul:nth-child(2){
     display: none;
 }
 
-.nav-list a{
+a{
     font-style: inherit;
     text-decoration: inherit;
     color: inherit;
