@@ -163,7 +163,7 @@ ws.onmessage = (message) => {
                 
         clearInterval(click_id)
         clearInterval(event_id)        
-        var name = JSON.stringify(data).slice(52,-3)
+        var name = data['name']
         if (name == 'unknown') {
 
             
