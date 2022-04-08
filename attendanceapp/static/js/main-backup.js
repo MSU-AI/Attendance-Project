@@ -166,14 +166,7 @@ ws.onmessage = (message) => {
         clearInterval(click_id)
         clearInterval(event_id)        
         var name = data['name']
-        if (name == 'unknown') {
-
-            
-            $("#info").text(name);
-        } else{
-
-            $("#info").text(name);
-        }
+        $("#info").text(name);
         flag = 'hand';
         setTimeout(()=>{
             $('#info').text("Starting Hand Recognition");
