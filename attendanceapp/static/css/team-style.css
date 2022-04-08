@@ -1,0 +1,49 @@
+body{
+    background-color: #050357;
+    color: white;
+}
+
+#heading{
+    font-size: 2rem;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+#main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 95vw;
+    margin-top: 1rem;
+}
+
+ul li{
+    margin: 1rem;
+    list-style-type: none;
+}
+
+.team{
+    width: 45vw;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+@media only screen and (max-width: 600px){
+    #main{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 95vw;
+        margin-top: 1rem;
+    }
+    .team{
+        width: 90vw;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+}
