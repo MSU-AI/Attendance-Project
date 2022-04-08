@@ -167,35 +167,12 @@ ws.onmessage = (message) => {
         if (name == 'unknown') {
 
             
-            eventFlag = false
-            $("#link").css("display", "inline-block");
-            $("#continue").css("display", "inline-block");
-            $("#name-unknown-box").cs
-            s("display", "block");
-            $("#info").css("display", "none");
-
-            nameDisplay = "Sorry, you were not recognised."
-            $(".name-display").text(nameDisplay);
-
-            $("#continue").click(function (e) { 
-                e.preventDefault();
-                $("#name-unknown-box").css("display", "none");
-                $("#info").css("display", "block");
-            });
+            $("#info").text(name);
+            };
         } else{
 
-            $("#link").css("display", "none");
-            $("#name-unknown-box").css("display", "block");
-            nameDisplay = "Name: " + name
-            $('#name-display').text(nameDisplay);
-            setTimeout(() => {
-
-                $("#name-unknown-box").css("display", "none");
-                $("#info").css("display", "block");
-
-            },8000)
+            $("#info").text(name);
         }
         flag = 'hand'
         $('#info').text("Starting Hand Recognition");
 }   
-}
