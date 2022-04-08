@@ -223,14 +223,7 @@ ul:nth-child(2){
 
 }
 
-.hidden{
+.show{
 
-    display: none;
-}
-
-a{
-    font-style: inherit;
-    text-decoration: inherit;
-    color: inherit;
-    font-size: inherit;
+    display: block !important;
 }
