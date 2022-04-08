@@ -222,3 +222,10 @@ ul:nth-child(2){
     transform: translateX(-3px);
 
 }
+
+a{
+    font-size: inherit;
+    color: inherit;
+    font-family: inherit;
+    text-decoration: inherit;
+}
