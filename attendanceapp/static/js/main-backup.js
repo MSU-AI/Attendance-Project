@@ -195,8 +195,7 @@ ws.onmessage = (message) => {
 
             },8000)
         }
-
+        flag = 'hand'
+        $('#info').text("Starting Hand Recognition");
 }   
-flag = 'hand'
-}    
-
+}
