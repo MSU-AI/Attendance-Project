@@ -43,25 +43,10 @@ $(".ctn").click(function (e) {
 
 
 /* Defining the event_loop */
-var flag = 'hand'
 let event_id;
 function event_loop() {
     
-    event_id = setInterval(() => {
-        
-        if (flag == 'hand') {
-            
-            $("#info").text("Starting Hand Rec...");
-            setTimeout(function handRec() {
-                $("#info").css("visibility", "visible");
-                $('#info').text('Please give a Thumbs Up');
-                click();
-            }, 2000);
-        }
-
-
-        if (flag == 'face') {
-            
+        event_id - setInterval( () => {
             $("#info").text("Starting Face Rec...");
             setTimeout(function faceRec() {
                 
@@ -70,9 +55,8 @@ function event_loop() {
                 click();
             }, 2000);
         }
-    }, 8000);
+        , 8000)
 }
-
 
 /*  defining the click function */
 let click_id;
@@ -102,27 +86,25 @@ takeSnapShot = function () {
     
         // Send the image for face processing:
     
-        if (flag == 'face') {
-            ws.send('{"id": "face", "token": ' + i + '}' + str);
-        }
+        ws.send('{"id": "face", "token": ' + i + '}' + str);
         
     
         // Send the image for hand processing:
-        if (flag == 'hand') {
-            ws.send('{"id": "hand", "token": ' + i + '}' + str);
-        }
+        // if (flag == 'hand') {
+        //     ws.send('{"id": "hand", "token": ' + i + '}' + str);
+        // }
         
     
         // Send data to the dummy handler:
-        if (flag == 'dummy') {
-            ws.send('{"id": "dummy"}This is dummy data!');
-        }
+        // if (flag == 'dummy') {
+        //     ws.send('{"id": "dummy"}This is dummy data!');
+        // }
         
     
         // Raise an exception and show error handling
-        if (flag == 'error') {
-            ws.send('{"id": "error"}Raise an error!');
-        }
+        // if (flag == 'error') {
+        //     ws.send('{"id": "error"}Raise an error!');
+        // }
         
     })};
 
@@ -146,18 +128,18 @@ ws.onmessage = (message) => {
 
     console.log(meta_data['id']);
         
-    if (meta_data['id'] == 'hand' && flag == 'hand') {
+    // if (meta_data['id'] == 'hand' && flag == 'hand') {
         
-        if (data['hand'] == 'thumbs up') {
+    //     if (data[0] == 'thumbs up') {
 
-            clearInterval(click_id)
-            clearInterval(event_id)
-            console.log("Face recogntion now!");
-            $('#info').text("Please position your face");
-            flag = 'face';
+    //         clearInterval(click_id)
+    //         clearInterval(event_id)
+    //         console.log("Face recogntion now!");
+    //         $('#info').text("Please position your face");
+    //         flag = 'face';
 
-        }
-    }
+    //     }
+    // }
 
     if (meta_data['id'] == 'face') {
                 
@@ -197,6 +179,7 @@ ws.onmessage = (message) => {
         }
 
 }   
-flag = 'hand'
+event_loop()
+// flag = 'hand'
 }    
 
