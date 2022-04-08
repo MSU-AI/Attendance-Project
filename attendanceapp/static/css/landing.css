@@ -222,8 +222,3 @@ ul:nth-child(2){
     transform: translateX(-3px);
 
 }
-
-.show{
-
-    display: block !important;
-}

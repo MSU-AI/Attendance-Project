@@ -23,10 +23,10 @@
         background:  #00203c;
         height: 50vh;
         flex-direction: column;
-        display: none;
+        display: none !important;
     }
     .mobile-nav {
-        display: flex;
+        display: flex !important;
     }
     .nav-list ul {
         flex-direction: column;
