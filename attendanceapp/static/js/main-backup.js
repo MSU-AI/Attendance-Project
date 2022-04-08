@@ -1,7 +1,9 @@
 /* Setting Webcam */
 Webcam.set({
-    width: 1200,
-    height: 1000,
+    width: 640,
+    height: 360,
+    dest_width: 1280,
+    dest_height: 720,
     image_format: 'jpeg',
     jpeg_quality: 100
 });
@@ -70,7 +72,7 @@ function event_loop() {
                 click();
             }, 2000);
         }
-    }, 8000);
+    }, 3000);
 }
 
 
