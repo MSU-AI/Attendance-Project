@@ -170,7 +170,7 @@ ws.onmessage = (message) => {
         flag = 'hand';
         setTimeout(()=>{
             $('#info').text("Starting Hand Recognition");
-        }, 2000
+        }, 4000
 
         )
         
