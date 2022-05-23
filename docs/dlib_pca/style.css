@@ -1,0 +1,14 @@
+.ui-container {
+  display: grid;
+  grid-template-columns: 70% 25%;
+  grid-column-gap: 5vw;
+}
+
+#threejs-container {
+  height: 100%;
+  min-height: 70vh;
+}
+
+.hovered img {
+  max-width: 80%;
+}
