@@ -18,7 +18,7 @@ class Person(mixins.SheetPullableMixin, models.Model):
     join_date = models.DateTimeField('date joined', default = datetime.date(2000, 1, 1))    
     APID = models.IntegerField(default = 123456789)
     id = models.BigAutoField(primary_key=True)
-    birthday = models.DateField('birthday', default = 'YYYY-MM-DD')
+    
 
 
 

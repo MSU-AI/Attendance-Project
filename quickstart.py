@@ -21,7 +21,7 @@ df.to_csv("attendance.csv");
 print(df)
 
 newdf = pd.DataFrame(df, columns=['Timestamp','First Name','Last Name','MSU Email'])
-newdf
+print(newdf)
 
 
 
