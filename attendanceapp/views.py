@@ -9,6 +9,8 @@ from.forms import PersonForm
 
 from interaction.frame_analyzer import FrameAnalyzer
 
+from attendanceapp.consumers import hands
+
 fa = FrameAnalyzer()
 
 
@@ -24,9 +26,16 @@ def app(request):
     return render(request, "attendance-app.html")
 
 
-def user_register(request, groupid):
+def sync(request):
+    
+    # Send a dummy message through:
+    
+    num = hands.handle('sync', 'blah', None)
 
-    # TODO: Add group support!
+    return HttpResponse("Sync operation completed, {} records loaded.".format(num))
+
+
+def user_register(request, groupid):
 
     if request.method == 'POST':
 

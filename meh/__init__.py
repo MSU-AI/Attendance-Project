@@ -1,10 +1,10 @@
 """
-Modular Event Handler Framerwok - MEH Fraework.
+Modular Event Handler Framework - MEH Framework.
 
 These components offer a framework for creating modular
 handlers that can react to certain events.
 
-Here is a breadown of the files included here:
+Here is a breakdown of the files included here:
 
 hand.py - Builtin handlers
 formatters.py - Handler formatters

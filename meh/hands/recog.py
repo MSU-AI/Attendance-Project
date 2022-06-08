@@ -38,7 +38,7 @@ class HandRecognize(BaseHandler):
         """
         Checks for hand gestures in the given frame.
 
-        We return a list of lables, and coordinates for each label.
+        We return a list of labels, and coordinates for each label.
 
         :param data: Frame to check
         :type data: bytes
@@ -89,7 +89,7 @@ class FaceRecognize(BaseHandler):
         Create any necessary components.
         """
         
-        # Load the face endcodings:
+        # Load the face encodings:
 
         self.encodings = []
 
@@ -97,7 +97,7 @@ class FaceRecognize(BaseHandler):
         """
         Checks for hand gestures in the given frame.
         
-        We return a list of lables, and coordinates for each label.
+        We return a list of labels, and coordinates for each label.
 
         :param data: Frame to check
         :type data: bytes
@@ -109,7 +109,7 @@ class FaceRecognize(BaseHandler):
 
         # Get the group we are working with:
 
-        group = Group.objects.get(name=self.meta['group'] if 'group' in self.meta else 'ai')
+        group = Group.objects.get(name=self.meta['group'] if 'group' in self.meta else 'msuai')
 
         # Get list of people:
 

@@ -117,3 +117,7 @@ gen
 
 static/
 *.sock
+
+# Misc. Secrets:
+
+credentials.json

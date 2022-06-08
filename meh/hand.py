@@ -47,8 +47,8 @@ class BaseHandler(object):
     Developers can add state event handling if their handler requires it!
 
     Each handler has two formatters that are used for converting and reverting.
-    Event handlers can make set both parameters to the same formatter,
-    but they can be diffrent if they wish.
+    Event handlers can set both parameters to the same formatter,
+    but they can also be different if they wish.
     
     Handlers can define event ids that they should be attached to.
     These ids can be defined using the 'ids' class parameter.
@@ -63,7 +63,7 @@ class BaseHandler(object):
 
         self.name = name  # Friendly name of this module
         self.running = False  # Value determining if this module us running
-        self.colllection = None  # Instance of the ModuleCollection we are bound to
+        self.collection = None  # Instance of the ModuleCollection we are bound to
 
         self.convert = convert  # Formatter used for conversion
         self.revert = revert  # Formatter used for reverting
@@ -244,7 +244,7 @@ class RaiseHandler(BaseHandler):
 
     def handle(self, data):
         """
-        Raises the given excpetion,
+        Raises the given exception,
         as promised.
 
         :param data: Data to work with

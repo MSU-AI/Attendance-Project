@@ -29,7 +29,7 @@ class HandlerCollection(object):
 
     This class ties handlers to certain events,
     which will be called when certain data is received.
-    We allow multuple handlers to be attached to the same event.
+    We allow multiple handlers to be attached to the same event.
 
     This class also maintains the state chain of each handler,
     calling the start(), stop(), ect. methods when appropriate.
@@ -118,7 +118,7 @@ class HandlerCollection(object):
         This handler will NOT be loaded if any errors are encountered.
 
         This class can also be used to load error handlers!
-        Just be sure to attach your error handler to the correct excpetions
+        Just be sure to attach your error handler to the correct exceptions
 
         :param module: Handler to add
         :type module: BaseHandler
@@ -130,11 +130,11 @@ class HandlerCollection(object):
         :rtype: BaseHandler
         """
 
-        # Do a check to ensure the module is valid:
+        # Do a check to ensure the handler is valid:
 
         if not isinstance(hand, self.hand_class):
 
-            # Invalid module!
+            # Invalid handler!
 
             raise TypeError("Invalid handler! MUST inherit {}!".format(self.module_type))
 
@@ -142,7 +142,7 @@ class HandlerCollection(object):
 
             ids = []
 
-        # Attach ourselves to the module:
+        # Attach ourselves to the handler:
 
         hand.collection = self
 
@@ -157,6 +157,8 @@ class HandlerCollection(object):
             # Load error occurred! Do something about it!
 
             self.error_handle(HandlerLoadError, hand, None, 'load', e)
+            
+            return
 
         # Add the module to our collection:
 
@@ -200,10 +202,8 @@ class HandlerCollection(object):
 
         if hand.running:
 
-            # Stop the handler, call the stop() method:
-
             self.stop_handler(hand)
-
+                
         # Now, run the unload method:
 
         try:
@@ -215,6 +215,8 @@ class HandlerCollection(object):
             # Raise an exception of our own:
 
             self.error_handle(HandlerUnloadError, hand, None, 'unload', e)
+            
+            return
 
         # Unload the handler:
 
@@ -305,7 +307,7 @@ class HandlerCollection(object):
 
         return hand
 
-    def restart_module(self, hand):
+    def restart_handler(self, hand):
         """
         Restarts the given handler.
 
@@ -375,7 +377,7 @@ class HandlerCollection(object):
         and returns each once when encountered.
 
         We return the ID we are under,
-        and the handler instacne, respectively.
+        and the handler instance, respectively.
 
         This method is best used in a for loop.
         """
@@ -448,7 +450,7 @@ class HandlerCollection(object):
 
             finally:
 
-                if temp:
+                if temp is not None:
 
                     # Add the data:
 
@@ -456,7 +458,7 @@ class HandlerCollection(object):
 
         # Check if the data is nothing:
 
-        if not final_data:
+        if final_data is None:
 
             # Return generic empty response
 
@@ -470,7 +472,7 @@ class HandlerCollection(object):
         """
         Handles the given exception.
 
-        We are a bit diffrent from conventional event handlers,
+        We are a bit different from conventional event handlers,
         in the sense that we search for class types.
 
         Default handlers are pulled from the handlers
@@ -490,7 +492,7 @@ class HandlerCollection(object):
         :rtype: Any
         """
 
-        # Get all handlers affiliated with the excpetion
+        # Get all handlers affiliated with the exception
 
         hands = self.hands[type(id)]
 

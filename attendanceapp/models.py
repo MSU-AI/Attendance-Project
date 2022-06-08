@@ -17,6 +17,7 @@ class Person(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     name = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
     join_date = models.DateTimeField('date joined')
 
     encodings = ArrayField(models.FloatField(), null=True, default=list)
