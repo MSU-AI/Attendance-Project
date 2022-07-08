@@ -1,7 +1,7 @@
 """
 This file contains components for writing handlers.
 
-The class of most intrest to most people is the BaseHandler,
+The class of most interest to most people is the BaseHandler,
 which offers an abstract base class that people can use to create 
 their own handlers that can be loaded into the HandlerCollection.
 
@@ -97,7 +97,7 @@ class BaseHandler(object):
         but it is recommended to stop all components in use by this handler,
         as it will stop working with events soon.
 
-        Do not do anything too peraminit!
+        Do not do anything too permanent!
         This module may be started again at a later date,
         so ideally this handler should stop all components
         in a way that can be started again.
@@ -135,7 +135,7 @@ class BaseHandler(object):
         it is reasonable to assume that this handler is not going to be used again.
         Event handlers can use this as a sign that their work is done.
 
-        It is recommended to make any final, permanint changes once 
+        It is recommended to make any final, permanent changes once 
         this method is called.
         """
 
@@ -146,7 +146,7 @@ class BaseHandler(object):
         Method called when their is data to be handled.
 
         This data will usually consist of JSON data to work with,
-        although some event handlers will use custom data fromats.
+        although some event handlers will use custom data formats.
 
         We raise a NotImplementedError, as this functionality
         should be overridden in the child classes.

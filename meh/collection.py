@@ -56,7 +56,7 @@ class HandlerCollection(object):
     Error handlers will be given a dictionary with the following content:
 
     {
-        'operation': String contaning the handler operation,
+        'operation': String containing the handler operation,
         'data': Raw data from the socket, None if our operation is anything but 'handle',
         'excp': Exception that was raised during runtime 
     }
@@ -83,7 +83,7 @@ class HandlerCollection(object):
         This will remove all loaded handlers,
         default handlers, and all error handlers.
 
-        Be warned, if not referenced elseware, 
+        Be warned, if not referenced elsewhere, 
         then these handler instances may be irreversibly deleted!
         """
 
