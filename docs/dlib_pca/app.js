@@ -15,14 +15,14 @@ let dataList;
 // entry point
 init();
 buildScene();
-camera.position.set(50, 50, 50);
-camera.lookAt(0, 0, 0);
+camera.position.set(-20, 20, 80);
+camera.lookAt(-50, 0, 50);
 animate();
 
 function init() {
     const container = initContainer("threejs-container");
     renderer = initRenderer(container);
-    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 1, 600);
+    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 1, 400);
     controls = initControls(camera, renderer);
     cursor = new THREE.Vector2();
     cursor.set({ x: -99, y: 99 });
@@ -82,10 +82,10 @@ async function readData(source="encoded_faces.json", colorMap="hot") {
 async function buildScene() {
     scene = new THREE.Scene();
 
-    const light = new THREE.DirectionalLight("white", 0.5);
+    const light = new THREE.DirectionalLight("white", 0.8);
     scene.add(light);
 
-    const fog = new THREE.Fog("black", 0.1, 200);
+    const fog = new THREE.Fog("black", 0.05, 200);
     scene.fog = fog;
 
     dataList = await readData();
@@ -99,6 +99,20 @@ async function buildScene() {
         sphere.position.set(scalar * data.x, scalar * data.y, scalar * data.z);
         scene.add(sphere);
     }
+
+    const gridXZ = new THREE.GridHelper(100, 10, "white", "white");
+    gridXZ.position.x = 0;
+    gridXZ.position.y = -50;
+    gridXZ.position.z = 0;
+    gridXZ.rotation.y = Math.PI / 2;
+    scene.add(gridXZ);
+
+    const gridXY = new THREE.GridHelper(100, 10, "white", "white");
+    gridXY.position.x = -50;
+    gridXY.position.y = 0;
+    gridXY.position.z = 0;
+    gridXY.rotation.z = Math.PI / 2;
+    scene.add(gridXY);
 }
 
 function updateHovered() {
@@ -131,13 +145,17 @@ function render() {
     const intersects = raycaster.intersectObjects(scene.children, false);
     if (intersects.length > 0) {
         if (selectedSphere != intersects[0].object) {
-            if (selectedSphere) { selectedSphere.material.emissiveIntensity = selectedSphere.prevEmissiveIntensity; }
+            if (selectedSphere) {
+                selectedSphere.material.emissiveIntensity = selectedSphere.prevEmissiveIntensity;
+            }
             selectedSphere = intersects[0].object;
             selectedSphere.prevEmissiveIntensity = selectedSphere.material.emissiveIntensity;
-            selectedSphere.material.emissiveIntensity = 1.5 * selectedSphere.material.emissiveIntensity;
+            selectedSphere.material.emissiveIntensity = 2 * selectedSphere.material.emissiveIntensity;
         }
     } else {
-        if (selectedSphere) { selectedSphere.material.emissiveIntensity = selectedSphere.prevEmissiveIntensity; }
+        if (selectedSphere) {
+            selectedSphere.material.emissiveIntensity = selectedSphere.prevEmissiveIntensity;
+        }
         selectedSphere = null;
     }
 
